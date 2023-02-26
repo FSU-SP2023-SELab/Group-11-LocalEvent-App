@@ -5,6 +5,7 @@ function HomePage({navigation}) {
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
     const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
     const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
+    const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
     const listOfUserStoriesData : UserStory[] = []
     for(var i = 0; i < 25; i++){
         const temp : UserStory = {
@@ -12,7 +13,7 @@ function HomePage({navigation}) {
             timeOfEvent: listOfDates[Math.floor(Math.random() *4)],
             timePostWasMade: listOfDates[Math.floor(Math.random() *4)],
             titleOfEvent: listOfTitles[Math.floor(Math.random() *4)],
-            pictureOfEvent: 'Picture'
+            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)]
         }
         listOfUserStoriesData.push(temp)
     }
@@ -22,7 +23,7 @@ function HomePage({navigation}) {
             <TouchableOpacity onPress={() => navigation.navigate("UserStory")} key={i}>
                 <View style={styles.userStoryContainer} >
                     <View style={styles.pictureTitleContainer}>
-                        <Image source={require('../Utils/Imgs/Party.webp')} style={styles.pictureStyle} key={i}></Image>
+                        <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.pictureStyle} key={i}></Image>
                         <View style={styles.nameOfEventContainer}>
                             <Text>{d.titleOfEvent}</Text>
                             <View style={styles.timeOfEventContainer}>
