@@ -1,5 +1,5 @@
 export interface UserStory{
-    id: any;
+    id: number,
     nameOfUser: string,
     timeOfEvent: Date,
     timePostWasMade: Date,
