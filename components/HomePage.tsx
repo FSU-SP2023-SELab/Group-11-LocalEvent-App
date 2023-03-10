@@ -12,7 +12,6 @@ function HomePage({navigation}) {
     const listOfUserStoriesData : UserStory[] = []
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(25).fill(false));
-
     for(var i = 0; i < 25; i++) {
         const temp : UserStory = {
             id: i,
@@ -20,7 +19,8 @@ function HomePage({navigation}) {
             timeOfEvent: listOfDates[Math.floor(Math.random() *4)],
             timePostWasMade: listOfDates[Math.floor(Math.random() *4)],
             titleOfEvent: listOfTitles[Math.floor(Math.random() *4)],
-            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)]
+            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
+            eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!"
         }
         listOfUserStoriesData.push(temp)
     }
@@ -37,7 +37,7 @@ function HomePage({navigation}) {
         };  
 
         return(
-      <TouchableOpacity onPress={()=> navigation.navigate('UserStory')} key={"UserStory " + i.toString()}>
+      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent.toLocaleString('en-US'), timePostWasMade: d.timePostWasMade.toLocaleDateString('en-US'), titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + i.toString()}>
         <View style={styles.userStoryContainer}>
             <View style={styles.picTitleLikeContainer}>
                     <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={i}></Image> 

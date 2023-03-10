@@ -5,4 +5,5 @@ export interface UserStory{
     timePostWasMade: Date,
     titleOfEvent: string,
     pictureOfEvent: string,
+    eventDescription: string,
 }
