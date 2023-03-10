@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react
 import {UserStory} from '../Utils/Interfaces/Interfaces'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Utils/Styles/HomePageStyle'
+import AddUserStoryButton from './AddUserStoryButton';
 
 function HomePage({navigation}) {
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
@@ -61,9 +62,31 @@ function HomePage({navigation}) {
       </TouchableOpacity> 
     )})
   return (
+    <>
     <ScrollView>
        {listOfUserStories}
-    </ScrollView>
+    </ScrollView>       
+    <View style={buttonStyles.buttonContainer}>
+        <AddUserStoryButton/>
+    </View>
+    </>
+    
   )
 }
 export default HomePage
+
+const buttonStyles = StyleSheet.create({
+    buttonContainer:{
+        display: "flex",
+        justifyContent: 'flex-end',
+        marginBottom: 10,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        zIndex: 50
+    },
+    buttonStyle:{
+        position: 'absolute',
+        bottom: 0
+    }
+})
