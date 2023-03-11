@@ -5,13 +5,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Utils/Styles/HomePageStyle'
 import AddUserStoryButton from './AddUserStoryButton';
 
-function HomePage({navigation}) {
+function HomePage({navigation, route}) {
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
     const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
     const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
     const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
     const listOfUserStoriesData : UserStory[] = []
-
+    
+    
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(25).fill(false));
     for(var i = 0; i < 25; i++) {
         const temp : UserStory = {
@@ -25,6 +26,17 @@ function HomePage({navigation}) {
         }
         listOfUserStoriesData.push(temp)
     }
+    // const newUserStory : UserStory = {
+    //     id: 38,
+    //     nameOfUser: addedUser === null ? "John" : addedUser,
+    //     timeOfEvent : addedTimeOfEvent === null ? new Date() : addedTimeOfEvent,
+    //     timePostWasMade : addedTimeOfEvent === null ? new Date(): addedTimeOfEvent,
+    //     titleOfEvent: addedTitle === null ? "Dummy" : addedTitle,
+    //     pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
+    //     eventDescription: addedDescription === null ? "Dummy" : addedDescription
+    // }
+
+    // listOfUserStoriesData.push(newUserStory)
 
     const listOfUserStories: JSX.Element[] = listOfUserStoriesData.map((d, i) => {
         //code handles the use (clicking) of the like button
@@ -67,7 +79,7 @@ function HomePage({navigation}) {
        {listOfUserStories}
     </ScrollView>       
     <View style={buttonStyles.buttonContainer}>
-        <AddUserStoryButton/>
+        <AddUserStoryButton navigation={navigation}/>
     </View>
     </>
     

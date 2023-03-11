@@ -9,6 +9,8 @@ import HomeTabNavigator from './components/HomeTabNavigator';
 import {NavigationContainer} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ExpandedUserStory from './components/ExpandedUserStory';
+import AddUserStoryForm from './components/AddUserStoryForm';
+import AddUserStoryButton from './components/AddUserStoryButton';
 
 
 
@@ -60,7 +62,17 @@ export default function App() {
         name='UserStory'
         component={ExpandedUserStory}
         />
+        <Stack.Screen
+        name="AddUserStoryForm"
+        component={AddUserStoryForm}
+        />
+        <Stack.Screen
+        name="AddUserStoryButton"
+        component={AddUserStoryButton}
+        />
+        
         </>
+        
         )}
 
       </Stack.Navigator>
