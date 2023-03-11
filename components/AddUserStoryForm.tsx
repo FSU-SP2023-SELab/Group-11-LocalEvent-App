@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'react-native'
+import { UserStory } from '../Utils/Interfaces/Interfaces';
 
 const dateTemplate = "(MM/DD/YYYY)"
 
@@ -12,11 +13,11 @@ function isNumber(char: string){
 }
 
 
-function AddUserStoryForm({navigation}) {
+function AddUserStoryForm({changePagePlusAddUserStory}) {
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
     const [eventTime, setEventTime] = useState('')
-    function logThingsInputted(){
+    function changingPagePlusAddingUserStory(){
         console.log(eventTime)
     if(eventTime.length !== 10)
         console.log("Wrong Time Format")
@@ -30,8 +31,18 @@ function AddUserStoryForm({navigation}) {
         console.log('Wrong Time Format')
     else if(!isNumber(eventTime.substring(6,10)))
         console.log('Wrong Time Format')
-    else        
-        navigation.navigate('Home', {addedUser: "John", addedTitle: eventTitle, addedTimeOfEvent: new Date(eventTime), addedTimePostMade: new Date(eventTime), addedDescription: eventDescription})
+    else{
+        const temp : UserStory = {
+            id: 32,
+            nameOfUser: "John",
+            timeOfEvent: new Date(eventTime),
+            timePostWasMade: new Date(eventTime),
+            titleOfEvent: eventTitle,
+            pictureOfEvent: "Naw",
+            eventDescription: eventDescription
+        }
+        changePagePlusAddUserStory(temp)
+    }
 }
   return (
     <View style={styles.container}>
@@ -56,7 +67,7 @@ function AddUserStoryForm({navigation}) {
         
         
         <View style={styles.publishButton}>
-            <Button onPress={()=>logThingsInputted()} title="Publish" color="#9CF22F"/>
+            <Button onPress={()=>changingPagePlusAddingUserStory()} title="Publish" color="#9CF22F"/>
         </View>
     </View>
   )

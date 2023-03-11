@@ -4,16 +4,21 @@ import {UserStory} from '../Utils/Interfaces/Interfaces'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Utils/Styles/HomePageStyle'
 import AddUserStoryButton from './AddUserStoryButton';
+import AddUserStoryForm from './AddUserStoryForm';
 
 function HomePage({navigation, route}) {
+
+    const [changePage, setChangePage] = useState(false)
+    const [userStories, setUserStories] = useState<UserStory[]>(new Array(30))
+
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
     const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
     const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
     const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
     const listOfUserStoriesData : UserStory[] = []
     
-    
-    const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(25).fill(false));
+    console.log("here?")
+    const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(26).fill(false));
     for(var i = 0; i < 25; i++) {
         const temp : UserStory = {
             id: i,
@@ -25,6 +30,17 @@ function HomePage({navigation, route}) {
             eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!"
         }
         listOfUserStoriesData.push(temp)
+        console.log("or here?")
+        // setUserStories(userStories => [...userStories, temp])
+    }
+    //setUserStories(listOfUserStoriesData)
+    function changeScreen(){
+        setChangePage(!changePage)
+    }
+    function changePagePlusAddUserStory( userStory: UserStory ){
+        // listOfUserStoriesData.push(userStory)
+        setUserStories(listOfUserStoriesData => [...listOfUserStoriesData, userStory])
+        setChangePage(!changePage)
     }
     // const newUserStory : UserStory = {
     //     id: 38,
@@ -37,7 +53,7 @@ function HomePage({navigation, route}) {
     // }
 
     // listOfUserStoriesData.push(newUserStory)
-
+    // listOfUserStoriesData.map((d, i))
     const listOfUserStories: JSX.Element[] = listOfUserStoriesData.map((d, i) => {
         //code handles the use (clicking) of the like button
         //but the post is changing after being liked
@@ -75,12 +91,21 @@ function HomePage({navigation, route}) {
     )})
   return (
     <>
-    <ScrollView>
-       {listOfUserStories}
-    </ScrollView>       
-    <View style={buttonStyles.buttonContainer}>
-        <AddUserStoryButton navigation={navigation}/>
-    </View>
+    {changePage === false ? (
+        <>
+        <ScrollView>
+            {listOfUserStories}
+        </ScrollView>       
+        <View style={buttonStyles.buttonContainer}>
+            <AddUserStoryButton changeScreen={changeScreen} navigation={navigation}/>
+        </View>
+        </>
+    ):(
+        <>
+        <AddUserStoryForm changePagePlusAddUserStory={changePagePlusAddUserStory} ></AddUserStoryForm>
+        </>
+    )}
+    
     </>
     
   )
