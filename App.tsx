@@ -12,6 +12,30 @@ import ExpandedUserStory from './components/ExpandedUserStory';
 import AddUserStoryForm from './components/AddUserStoryForm';
 import AddUserStoryButton from './components/AddUserStoryButton';
 
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getDatabase } from 'firebase/database';
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgrQn5pV4QgaHJ0UqIcyJv8PIfUhQMlkw",
+  authDomain: "localeventapp.firebaseapp.com",
+  projectId: "localeventapp",
+  storageBucket: "localeventapp.appspot.com",
+  messagingSenderId: "713257283738",
+  appId: "1:713257283738:web:0ee5ff844c08b50881af23"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+
+
+
 
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +43,7 @@ export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)
   const listOfVerifiedUsers: string[] = ['John', 'Wilfredo', 'Mark', 'Juan']
   const verifiedPassword: string = '1234'
+
   function isUser(username: string, password: string){
     if(listOfVerifiedUsers.includes(username) && verifiedPassword === password)
       setLoggedIn(true)
