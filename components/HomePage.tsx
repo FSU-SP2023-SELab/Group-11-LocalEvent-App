@@ -1,25 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {Text, View, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native'
 import {UserStory} from '../Utils/Interfaces/Interfaces'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Utils/Styles/HomePageStyle'
 import AddUserStoryButton from './AddUserStoryButton';
 import AddUserStoryForm from './AddUserStoryForm';
+import { useRoute } from '@react-navigation/native';
 
 function HomePage({navigation, route}) {
-
-    const [changePage, setChangePage] = useState(false)
-    const [userStories, setUserStories] = useState<UserStory[]>(new Array(30))
 
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
     const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
     const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
     const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
     const listOfUserStoriesData : UserStory[] = []
-    
-    console.log("here?")
-    const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(26).fill(false));
-    for(var i = 0; i < 25; i++) {
+
+    const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
+    for(var i = 0; i < 10; i++) {
         const temp : UserStory = {
             id: i,
             nameOfUser : listOfUsers[Math.floor(Math.random() *4)],
@@ -29,41 +26,46 @@ function HomePage({navigation, route}) {
             pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
             eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!"
         }
-        listOfUserStoriesData.push(temp)
-        console.log("or here?")
-        // setUserStories(userStories => [...userStories, temp])
+        listOfUserStoriesData.push(temp)  // Starter Entries 
     }
-    //setUserStories(listOfUserStoriesData)
-    function changeScreen(){
-        setChangePage(!changePage)
+    // setUserStories(userStories.concat(listOfUserStoriesData))
+    //setUserStories(listOfUserStoriesData) 
+    
+    const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
+    const [changePage, setChangePage] = useState(true)
+    const changePagePlusAddUserStory = ( userStory: UserStory ) => {
+        setChangePage(!changePage)  // Changes Page back to Home Page
+        setUserStories([...userStories, userStory])
+         // Adds New User Stories
     }
-    function changePagePlusAddUserStory( userStory: UserStory ){
-        // listOfUserStoriesData.push(userStory)
-        setUserStories(listOfUserStoriesData => [...listOfUserStoriesData, userStory])
-        setChangePage(!changePage)
+    const changePageFunc = () =>{
+        setChangePage(!changePage)  //Just Changes the Page back to Home Page
     }
-    // const newUserStory : UserStory = {
-    //     id: 38,
-    //     nameOfUser: addedUser === null ? "John" : addedUser,
-    //     timeOfEvent : addedTimeOfEvent === null ? new Date() : addedTimeOfEvent,
-    //     timePostWasMade : addedTimeOfEvent === null ? new Date(): addedTimeOfEvent,
-    //     titleOfEvent: addedTitle === null ? "Dummy" : addedTitle,
-    //     pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
-    //     eventDescription: addedDescription === null ? "Dummy" : addedDescription
-    // }
 
-    // listOfUserStoriesData.push(newUserStory)
-    // listOfUserStoriesData.map((d, i))
-    const listOfUserStories: JSX.Element[] = listOfUserStoriesData.map((d, i) => {
+    let listOfUserStories: JSX.Element[] = userStories.map((d, i) => {
+        
+        
         //code handles the use (clicking) of the like button
         //but the post is changing after being liked
-        const [isLiked, setIsLiked] = useState(likeStatus[d.id]);
-        const handlePress = () => {
-            const updatedLikeStatus = [...likeStatus];
-            updatedLikeStatus[d.id] = !isLiked;
-            setLikeStatus(updatedLikeStatus);
-            setIsLiked(!isLiked);
-        };  
+        
+        /*
+        *
+        *
+        *   Code Below broke the Program. It complained that there too many 
+        *   Re-Renders. Maybe we can hold this in a non-useState array?
+        *   Or maybe do a useEffect in order to have that be rendered POST
+        *   Page renders?
+        * 
+        * 
+        */
+
+        // const [isLiked, setIsLiked] = useState(likeStatus[d.id]);
+        // const handlePress = () => {
+        //     const updatedLikeStatus = [...likeStatus];
+        //     updatedLikeStatus[d.id] = !isLiked;
+        //     setLikeStatus(updatedLikeStatus);
+        //     setIsLiked(!isLiked);
+        // };  
 
         return(
       <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent.toLocaleString('en-US'), timePostWasMade: d.timePostWasMade.toLocaleDateString('en-US'), titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + i.toString()}>
@@ -73,9 +75,9 @@ function HomePage({navigation, route}) {
                 <View style={styles.informationAboutEventContainer}>
                     <View style={styles.nameOfEventAndLikeButtonContainer}>
                         <Text>{d.titleOfEvent}</Text>
-                        <TouchableOpacity onPress={handlePress} key={i}>
+                        {/* <TouchableOpacity onPress={handlePress} key={i}>
                                    <Icon name={likeStatus[d.id] ? 'heart' : 'heart-o'} size={24} color={likeStatus[d.id] ? 'red' : 'black'} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     <View style={styles.timeOfEventAndTimePostedContainer}>
                         <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent.toLocaleDateString('en-US')} </Text>
@@ -89,23 +91,26 @@ function HomePage({navigation, route}) {
         </View>
       </TouchableOpacity> 
     )})
+    
   return (
     <>
-    {changePage === false ? (
-        <>
+    {changePage ? (<>
         <ScrollView>
             {listOfUserStories}
         </ScrollView>       
         <View style={buttonStyles.buttonContainer}>
-            <AddUserStoryButton changeScreen={changeScreen} navigation={navigation}/>
+            <AddUserStoryButton changePage={changePageFunc}/>       
         </View>
         </>
-    ):(
+        // This switches between pages based on changePage! Uses Turnary Operator
+        ):(
         <>
-        <AddUserStoryForm changePagePlusAddUserStory={changePagePlusAddUserStory} ></AddUserStoryForm>
+        <AddUserStoryForm changePagePlusAddUserStory={changePagePlusAddUserStory}></AddUserStoryForm>
         </>
-    )}
-    
+        )}
+        
+ 
+        
     </>
     
   )
@@ -120,6 +125,15 @@ const buttonStyles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
+        zIndex: 50
+    },
+    tempButtonContainer: {
+        display: "flex",
+        justifyContent: 'flex-end',
+        marginBottom: 10,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
         zIndex: 50
     },
     buttonStyle:{
