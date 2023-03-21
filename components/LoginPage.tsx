@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-
+import styles from "../Utils/Styles/LoginPageStyle"
 
 const LoginPage = ({bringStateUp}) => {
     // let h : number[] = []
@@ -29,21 +29,4 @@ const LoginPage = ({bringStateUp}) => {
        
     )
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    input: {
-        width: 250,
-        height: 20,
-        borderWidth: 1
-        },
-    inputContainer:{
-        bottom:40 
-    }
-}
-)
 export default LoginPage

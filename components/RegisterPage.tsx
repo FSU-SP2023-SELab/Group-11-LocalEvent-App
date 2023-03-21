@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-
+import styles from "../Utils/Styles/RegisterPageStyle"
 export default function RegisterPage({navigation}){
   return (
     <View style={styles.container}>
@@ -21,19 +21,3 @@ export default function RegisterPage({navigation}){
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-    miniContainer: {
-        bottom:40  
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    input: {
-        width: 250,
-        height: 20,
-        borderWidth: 1
-    }
-})

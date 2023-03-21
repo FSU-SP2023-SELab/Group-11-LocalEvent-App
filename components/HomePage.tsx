@@ -1,97 +1,143 @@
-import React from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {Text, View, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native'
 import {UserStory} from '../Utils/Interfaces/Interfaces'
-function HomePage({navigation}) {
+import Icon from 'react-native-vector-icons/FontAwesome';
+import styles from '../Utils/Styles/HomePageStyle'
+import AddUserStoryButton from './AddUserStoryButton';
+import AddUserStoryForm from './AddUserStoryForm';
+import { useRoute } from '@react-navigation/native';
+
+function HomePage({navigation, route}) {
+
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
     const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
     const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
     const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
     const listOfUserStoriesData : UserStory[] = []
-    for(var i = 0; i < 25; i++){
+
+    const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
+    for(var i = 0; i < 10; i++) {
         const temp : UserStory = {
+            id: i,
             nameOfUser : listOfUsers[Math.floor(Math.random() *4)],
             timeOfEvent: listOfDates[Math.floor(Math.random() *4)],
             timePostWasMade: listOfDates[Math.floor(Math.random() *4)],
             titleOfEvent: listOfTitles[Math.floor(Math.random() *4)],
-            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)]
+            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
+            eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!"
         }
-        listOfUserStoriesData.push(temp)
+        listOfUserStoriesData.push(temp)  // Starter Entries 
+    }
+    // setUserStories(userStories.concat(listOfUserStoriesData))
+    //setUserStories(listOfUserStoriesData) 
+    
+    const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
+    const [changePage, setChangePage] = useState(true)
+    const changePagePlusAddUserStory = ( userStory: UserStory ) => {
+        setChangePage(!changePage)  // Changes Page back to Home Page
+        setUserStories([...userStories, userStory])
+         // Adds New User Stories
+    }
+    const changePageFunc = () =>{
+        setChangePage(!changePage)  //Just Changes the Page back to Home Page
     }
 
-    const listOfUserStories: JSX.Element[] = listOfUserStoriesData.map((d, i) => {
+    let listOfUserStories: JSX.Element[] = userStories.map((d, i) => {
+        
+        
+        //code handles the use (clicking) of the like button
+        //but the post is changing after being liked
+        
+        /*
+        *
+        *
+        *   Code Below broke the Program. It complained that there too many 
+        *   Re-Renders. Maybe we can hold this in a non-useState array?
+        *   Or maybe do a useEffect in order to have that be rendered POST
+        *   Page renders?
+        * 
+        * 
+        */
+
+        // const [isLiked, setIsLiked] = useState(likeStatus[d.id]);
+        // const handlePress = () => {
+        //     const updatedLikeStatus = [...likeStatus];
+        //     updatedLikeStatus[d.id] = !isLiked;
+        //     setLikeStatus(updatedLikeStatus);
+        //     setIsLiked(!isLiked);
+        // };  
+
         return(
-            <TouchableOpacity onPress={() => navigation.navigate("UserStory")} key={i}>
-                <View style={styles.userStoryContainer} >
-                    <View style={styles.pictureTitleContainer}>
-                        <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.pictureStyle} key={i}></Image>
-                        <View style={styles.nameOfEventContainer}>
-                            <Text>{d.titleOfEvent}</Text>
-                            <View style={styles.timeOfEventContainer}>
-                                <Text>Event Starts: {d.timeOfEvent.toLocaleDateString('en-US')}</Text>
-                                <Text style={styles.timePostedText}> Posted on: {d.timePostWasMade.toLocaleDateString('en-US')}</Text>
-                            </View>
-                        </View>
+      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent.toLocaleString('en-US'), timePostWasMade: d.timePostWasMade.toLocaleDateString('en-US'), titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + i.toString()}>
+        <View style={styles.userStoryContainer}>
+            <View style={styles.picTitleLikeContainer}>
+                    <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={i}></Image> 
+                <View style={styles.informationAboutEventContainer}>
+                    <View style={styles.nameOfEventAndLikeButtonContainer}>
+                        <Text>{d.titleOfEvent}</Text>
+                        {/* <TouchableOpacity onPress={handlePress} key={i}>
+                                   <Icon name={likeStatus[d.id] ? 'heart' : 'heart-o'} size={24} color={likeStatus[d.id] ? 'red' : 'black'} />
+                        </TouchableOpacity> */}
                     </View>
-                    <View style={styles.nameOfUserContainer}>
-                        <Text>Posted by: {d.nameOfUser}</Text>
+                    <View style={styles.timeOfEventAndTimePostedContainer}>
+                        <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent.toLocaleDateString('en-US')} </Text>
+                        <Text>Posted: {d.timePostWasMade.toLocaleDateString('en-US')}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
-        )
-    })
+            </View>
+            <View style={{height: 20}}>
+                <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
+            </View>
+        </View>
+      </TouchableOpacity> 
+    )})
+    
   return (
-    <ScrollView>
-       {listOfUserStories}
-    </ScrollView>
+    <>
+    {changePage ? (<>
+        <ScrollView>
+            {listOfUserStories}
+        </ScrollView>       
+        <View style={buttonStyles.buttonContainer}>
+            <AddUserStoryButton changePage={changePageFunc}/>       
+        </View>
+        </>
+        // This switches between pages based on changePage! Uses Turnary Operator
+        ):(
+        <>
+        <AddUserStoryForm changePagePlusAddUserStory={changePagePlusAddUserStory}></AddUserStoryForm>
+        </>
+        )}
+        
+ 
+        
+    </>
     
   )
 }
-const styles = StyleSheet.create({
-    userStoryContainer:{
-        width: "100%",
-        height: 100,
-        borderWidth: 1,
-    },
-    pictureTitleContainer:{
-        flex:1,
-        flexDirection: 'row',
-        height:"75%",
-        width:"100%",
-    },
-    pictureStyle:{
-        width: 100,
-        height:"100%",
-    },
-    nameOfEventContainer: {
-        position:'relative',
-        borderColor: 'lightblue',
-        borderWidth: 1,
-        width:"77%",
-        height: "100%",
-        // alignContent:'center',
-        // justifyContent: 'center'
-    },
-    timeOfEventContainer:{
-        flex:1,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        // alignContent: 'space-between',
-        height:'100%'
-
-    },
-    timePostedText:{
-        alignSelf:'flex-end'
-    },
-    nameOfUserContainer:{
-        flex:0,
-        height: '25%',
-        width: '100%',
-        flexDirection: 'row',
-        alignItems:'flex-end',
-        justifyContent:'flex-end'
-    }
-    
-    
-});
-
 export default HomePage
+
+const buttonStyles = StyleSheet.create({
+    buttonContainer:{
+        display: "flex",
+        justifyContent: 'flex-end',
+        marginBottom: 10,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        zIndex: 50
+    },
+    tempButtonContainer: {
+        display: "flex",
+        justifyContent: 'flex-end',
+        marginBottom: 10,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        zIndex: 50
+    },
+    buttonStyle:{
+        position: 'absolute',
+        bottom: 0
+    }
+})
