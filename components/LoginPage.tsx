@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import styles from "../Utils/Styles/LoginPageStyle"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const LoginPage = ({bringStateUp}) => {
+const LoginPage = ({isUser}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loginStatus, setLoginStatus] = useState('')
@@ -17,11 +17,13 @@ const LoginPage = ({bringStateUp}) => {
             // Signed in 
             const user = userCredential.user;
             setLoginStatus('Login Successful')
+            isUser(true)
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             setLoginStatus('Login Failed')
+            isUser(false)
         });
     }
 
@@ -30,13 +32,15 @@ const LoginPage = ({bringStateUp}) => {
             
             <View style={styles.inputContainer}>
                 <Text>Username</Text>
-                <TextInput style={styles.input} onChangeText={(newText) => setEmail(newText)} value={email}/>
+                {/* {the value and defaultValue may or may not be neccesary} */}
+                <TextInput style={styles.input} onChangeText={(newText) => setEmail(newText)} value={email} />
                 <Text>Password</Text>
-                <TextInput style={styles.input} onChangeText={(newText) =>setPassword(newText)} defaultValue={password}/>
+                <TextInput style={styles.input} onChangeText={(newText) =>setPassword(newText)} defaultValue={password} />
             </View>
   
-            <Button onPress={handleLogin} title={loginStatus || 'login'} />
+            <Button onPress={() => handleLogin()} title='login' ></Button>
         </View>
+       
     )
 }
 export default LoginPage;
