@@ -7,7 +7,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 const LoginPage = ({isUser}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [loginStatus, setLoginStatus] = useState('')
+    const [isValidPassword, setIsValidPassword] = useState(true)
 
     const auth = getAuth();
 
@@ -15,14 +15,14 @@ const LoginPage = ({isUser}) => {
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in 
+            setIsValidPassword(true)
             const user = userCredential.user;
-            setLoginStatus('Login Successful')
             isUser(true)
         })
         .catch((error) => {
+            setIsValidPassword(false)
             const errorCode = error.code;
             const errorMessage = error.message;
-            setLoginStatus('Login Failed')
             isUser(false)
         });
     }
@@ -31,12 +31,19 @@ const LoginPage = ({isUser}) => {
         <View style={styles.container}>
             
             <View style={styles.inputContainer}>
-                <Text>Username</Text>
+                <Text>Email</Text>
                 {/* {the value and defaultValue may or may not be neccesary} */}
                 <TextInput style={styles.input} onChangeText={(newText) => setEmail(newText)} value={email} />
                 <Text>Password</Text>
                 <TextInput style={styles.input} onChangeText={(newText) =>setPassword(newText)} defaultValue={password} />
             </View>
+
+            {
+            !isValidPassword && 
+            <View>
+                <Text> You entered the wrong password </Text>
+            </View>
+            }
   
             <Button onPress={() => handleLogin()} title='login' ></Button>
         </View>

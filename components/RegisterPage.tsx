@@ -2,7 +2,6 @@
 import React, { useRef, useState } from 'react'
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import styles from "../Utils/Styles/RegisterPageStyle"
-import HomePage from './components/HomePage';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function RegisterPage({navigation}) {
@@ -15,10 +14,12 @@ export default function RegisterPage({navigation}) {
   const [isSamePassword, setSamePasswords] = useState(true)
 
   const handleNewUser = () => {
+    //need to figure out what to do with firstname and lastname
     if (password !== password_reenter) {
-      setSamePasswords(false)
+      setSamePasswords(false) //display the error message
     }
     else {
+      setSamePasswords(true) //take the error message away
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -57,14 +58,14 @@ export default function RegisterPage({navigation}) {
         <TextInput style={styles.input} onChangeText={(newText) => setPasswordReenter(newText)} />
         </View>
         {
-        // !isSamePassword && <View>
-        //   <Text> You entered the wrong password for the re-entry of password </Text>
-        // </View>
+          !isSamePassword && <View>
+            <Text> You entered the wrong password for the re-entry of password </Text>
+          </View>
         }
         {
-          // !isNewUser && <View>
-          //   <Text>User Is already in the Database, Go login silly?</Text>
-          // </View>
+          !isNewUser && <View>
+            <Text>User Is already in the Database, Go login silly?</Text>
+          </View>
         }
         
         {/* { use conditional rendering . set to true initially } */}
