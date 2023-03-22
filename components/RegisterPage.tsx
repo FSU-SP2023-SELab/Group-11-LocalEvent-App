@@ -38,7 +38,7 @@ export default function RegisterPage({navigation}) {
     const handleIsSamePassword = () => { setSamePasswords(!isSamePassword) }
 
     function returnToHomePage() {
-      navigation.navigate('HomePage')
+      navigation.navigate('Start')
     }
     
 
