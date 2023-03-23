@@ -22,6 +22,7 @@ import { getDatabase } from 'firebase/database';
 const firebaseConfig = {
   apiKey: "AIzaSyCgrQn5pV4QgaHJ0UqIcyJv8PIfUhQMlkw",
   authDomain: "localeventapp.firebaseapp.com",
+  databaseURL: "https://localeventapp-default-rtdb.firebaseio.com/",
   projectId: "localeventapp",
   storageBucket: "localeventapp.appspot.com",
   messagingSenderId: "713257283738",

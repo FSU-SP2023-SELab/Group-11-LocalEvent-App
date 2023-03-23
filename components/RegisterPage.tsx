@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import styles from "../Utils/Styles/RegisterPageStyle"
 
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set,push, child, get} from "firebase/database";
+
 
 export default function RegisterPage({navigation}) {
   const [firstName, setFirstName] = useState('')
@@ -21,12 +23,19 @@ export default function RegisterPage({navigation}) {
     }
     else {
       setSamePasswords(true) //take the error message away
-      const auth = getAuth();
+      const auth = getAuth()
+      const database = getDatabase();
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
         setNewUser(true)
+
+        set(ref(database,'Users/'+user.uid),{
+          first: firstName,
+          last: lastName,
+        })
+
         returnToHomePage()
       })
       .catch((error) => {
