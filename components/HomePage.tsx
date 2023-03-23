@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useCallback } from 'react'
 import {Text, View, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native'
 import {UserStory} from '../Utils/Interfaces/Interfaces'
@@ -14,6 +15,7 @@ function HomePage({navigation, route}) {
     const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
     const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
     const listOfUserStoriesData : UserStory[] = []
+
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
     for(var i = 0; i < 10; i++) {
@@ -41,6 +43,7 @@ function HomePage({navigation, route}) {
     const changePageFunc = () =>{
         setChangePage(!changePage)  //Just Changes the Page back to Home Page
     }
+
 
     let listOfUserStories: JSX.Element[] = userStories.map((d, i) => {
         
@@ -75,6 +78,7 @@ function HomePage({navigation, route}) {
                 <View style={styles.informationAboutEventContainer}>
                     <View style={styles.nameOfEventAndLikeButtonContainer}>
                         <Text>{d.titleOfEvent}</Text>
+
                         {/* <TouchableOpacity onPress={handlePress} key={i}>
                                    <Icon name={likeStatus[d.id] ? 'heart' : 'heart-o'} size={24} color={likeStatus[d.id] ? 'red' : 'black'} />
                         </TouchableOpacity> */}
@@ -91,6 +95,7 @@ function HomePage({navigation, route}) {
         </View>
       </TouchableOpacity> 
     )})
+
     
   return (
     <>

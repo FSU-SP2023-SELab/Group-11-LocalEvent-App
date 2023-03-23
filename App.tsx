@@ -22,6 +22,7 @@ import { getDatabase } from 'firebase/database';
 const firebaseConfig = {
   apiKey: "AIzaSyCgrQn5pV4QgaHJ0UqIcyJv8PIfUhQMlkw",
   authDomain: "localeventapp.firebaseapp.com",
+  databaseURL: "https://localeventapp-default-rtdb.firebaseio.com/",
   projectId: "localeventapp",
   storageBucket: "localeventapp.appspot.com",
   messagingSenderId: "713257283738",
@@ -35,21 +36,15 @@ const database = getDatabase(app);
 
 
 
-
-
-
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)
   const listOfVerifiedUsers: string[] = ['John', 'Wilfredo', 'Mark', 'Juan']
   const verifiedPassword: string = '1234'
 
-  function isUser(username: string, password: string){
-    if(listOfVerifiedUsers.includes(username) && verifiedPassword === password)
-      setLoggedIn(true)
-    else
-      setLoggedIn(false)
-    }
+  function isUser(isLoggedIn: boolean){
+    setLoggedIn(isLoggedIn)
+  }
     return (
       <NavigationContainer>
       <Stack.Navigator>
@@ -67,7 +62,7 @@ export default function App() {
           name='Login'
           // component={LoginPage}
           >
-            {(props) => <LoginPage {...props} bringStateUp={isUser}/>}
+            {(props) => <LoginPage {...props} isUser={isUser}/>}
           </Stack.Screen>
           <Stack.Screen
           name='Register'
