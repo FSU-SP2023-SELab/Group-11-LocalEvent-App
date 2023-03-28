@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'react-native'
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
+import { writeUserData } from '../App';
+import { getAuth } from 'firebase/auth';
+import { equalTo, getDatabase, onValue, orderByChild, push, query, ref, get } from 'firebase/database';
 const dateTemplate = "(MM/DD/YYYY)"
 
 
@@ -18,13 +21,15 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
     const [eventTime, setEventTime] = useState('')
+    const [pictureOfEvent, setPictureOfEvent] = useState('')
     const navigation = useNavigation()
     const data = 0
     // const changePage = () =>{
     //     navigation.navigate("Home", {data:data})
     // }
 
-    function changingPagePlusAddingUserStory(){
+    //made function "async" so that the results can populate from the database before writeUserData is called
+    async function changingPagePlusAddingUserStory(){
         console.log(eventTime)
         //Checks to see if time is in correct format
     if(eventTime.length !== 10)
@@ -40,17 +45,37 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
     else if(!isNumber(eventTime.substring(6,10)))
         console.log('Wrong Time Format')
     else{
+        const auth = getAuth();
+        const user = auth.currentUser;
+        const database = getDatabase();
+        
+        let fullName = ''
+        const usersRef = ref(database, "Users/" + user.uid);
+        await get(usersRef).then((snapshot) => {
+        let currentUserData = snapshot.val();
+        for (let key in currentUserData) {
+            let temp = currentUserData[key]
+            fullName += temp + " "
+            }
+        }).catch((error) => {
+            console.error(error);
+            });
+
+        const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
+        const dateString = new Date(Date.parse(eventTime))
         const temp : UserStory = {
-            id: 32,
-            nameOfUser: "John",
-            timeOfEvent: new Date(eventTime),
-            timePostWasMade: new Date(eventTime),
+            id: id,
+            nameOfUser: fullName,
+            timeOfEvent: dateString,
+            timePostWasMade: new Date(),
             titleOfEvent: eventTitle,
-            pictureOfEvent: "Naw",
-            eventDescription: eventDescription
-        }
-        // const temp1 : number = 0
-        changePagePlusAddUserStory(temp)
+            pictureOfEvent: pictureOfEvent,
+            eventDescription: eventDescription,
+            userID: user.uid,
+        };
+            
+        console.log(temp)
+        writeUserData(temp)
     }
 }
 // useEffect(()=>{
