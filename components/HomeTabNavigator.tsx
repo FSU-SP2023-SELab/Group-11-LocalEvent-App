@@ -8,12 +8,15 @@ import Settings from './Settings'
 
 const Tab = createBottomTabNavigator();
 //const Drawer = createDrawerNavigator();
-function HomeTabNavigator() {
+function HomeTabNavigator({userStoryData, addUserStory}) {
   return (
         <Tab.Navigator>
             <Tab.Screen
             name="RealHome"
-            component={HomePage}/>
+            // component={HomePage}
+            >
+              {(props) => <HomePage {...props} userData={userStoryData} addUserStory={addUserStory}/>}
+            </Tab.Screen>
             <Tab.Screen
             name="Best This Week"
             component={HomePageTopPosts}/>

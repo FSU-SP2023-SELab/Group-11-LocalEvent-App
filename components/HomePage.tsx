@@ -6,46 +6,28 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../Utils/Styles/HomePageStyle'
 import AddUserStoryButton from './AddUserStoryButton';
 import AddUserStoryForm from './AddUserStoryForm';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { setTemplateUserStories } from '../Utils/Functions/Functions';
 
-function HomePage({navigation, route}) {
+function HomePage({userData, addUserStory}) {
 
-    const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
-    const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
-    const listOfDates : Date[] = [new Date("9/11/2001"), new Date("04/02/2023"), new Date('10/12/2020'), new Date()]
-    const listOfPics: string[] = ['../Utils/Imgs/Party.webp', '../Utils/Imgs/Party2.jpeg']
-    const listOfUserStoriesData : UserStory[] = []
-
+    const navigation = useNavigation()
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
-    for(var i = 0; i < 10; i++) {
-        const temp : UserStory = {
-            id: i,
-            nameOfUser : listOfUsers[Math.floor(Math.random() *4)],
-            timeOfEvent: listOfDates[Math.floor(Math.random() *4)],
-            timePostWasMade: listOfDates[Math.floor(Math.random() *4)],
-            titleOfEvent: listOfTitles[Math.floor(Math.random() *4)],
-            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
-            eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!"
-        }
-        listOfUserStoriesData.push(temp)  // Starter Entries 
-    }
-    // setUserStories(userStories.concat(listOfUserStoriesData))
-    //setUserStories(listOfUserStoriesData) 
-    
-    const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
+    // let listOfUserStoriesData = setTemplateUserStories()
+    // const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
     const [changePage, setChangePage] = useState(true)
-    const changePagePlusAddUserStory = ( userStory: UserStory ) => {
-        setChangePage(!changePage)  // Changes Page back to Home Page
-        setUserStories([...userStories, userStory])
-         // Adds New User Stories
-    }
+    // const changePagePlusAddUserStory = ( userStory: UserStory ) => {
+    //     // setChangePage(!changePage)  // Changes Page back to Home Page
+    //     addUserStory(userStory)
+    //      // Adds New User Stories
+    // }
     const changePageFunc = () =>{
         setChangePage(!changePage)  //Just Changes the Page back to Home Page
     }
 
 
-    let listOfUserStories: JSX.Element[] = userStories.map((d, i) => {
+    let listOfUserStories: JSX.Element[] = userData.map((d, i) => {
         
         
         //code handles the use (clicking) of the like button
@@ -99,23 +81,12 @@ function HomePage({navigation, route}) {
     
   return (
     <>
-    {changePage ? (<>
         <ScrollView>
             {listOfUserStories}
         </ScrollView>       
         <View style={buttonStyles.buttonContainer}>
-            <AddUserStoryButton changePage={changePageFunc}/>       
+            <AddUserStoryButton/>       
         </View>
-        </>
-        // This switches between pages based on changePage! Uses Turnary Operator
-        ):(
-        <>
-        <AddUserStoryForm changePagePlusAddUserStory={changePagePlusAddUserStory}></AddUserStoryForm>
-        </>
-        )}
-        
- 
-        
     </>
     
   )
