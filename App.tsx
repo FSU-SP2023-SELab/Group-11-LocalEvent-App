@@ -14,9 +14,10 @@ import AddUserStoryButton from './components/AddUserStoryButton';
 
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { get, getDatabase } from 'firebase/database';
 import { UserStory } from './Utils/Interfaces/Interfaces';
 import { setTemplateUserStories } from './Utils/Functions/Functions';
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -35,6 +36,23 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 const database = getDatabase(app);
+const user = auth.currentUser;
+
+//for writing to the database
+import { ref, set } from "firebase/database";
+import { UserStory } from './Utils/Interfaces/Interfaces';
+export function writeUserData(story: UserStory) {
+    set(ref(database, 'UserStories/' + story.id), {
+      id: story.id,
+      nameOfUser: story.nameOfUser,
+      timeOfEvent: story.timeOfEvent.toString(),
+      timePostWasMade: story.timePostWasMade.toString(),
+      titleOfEvent: story.titleOfEvent,
+      pictureOfEvent: story.pictureOfEvent,
+      eventDescription: story.eventDescription,
+      userID: story.userID,
+    });
+  }
 
 
 
