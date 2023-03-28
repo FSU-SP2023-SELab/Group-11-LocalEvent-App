@@ -2,9 +2,6 @@ import React from 'react'
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import styles from "../Utils/Styles/StartingPageStyle"
 export default function StartPage({navigation}) {
-  function runNavigate(){
-        navigation.navigate('Layer1')
-  }
   return (
     <View>
          <View style={styles.navBar}> 

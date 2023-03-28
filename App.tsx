@@ -13,8 +13,11 @@ import AddUserStoryForm from './components/AddUserStoryForm';
 import AddUserStoryButton from './components/AddUserStoryButton';
 
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { get, getDatabase } from 'firebase/database';
+import { UserStory } from './Utils/Interfaces/Interfaces';
+import { setTemplateUserStories } from './Utils/Functions/Functions';
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -56,11 +59,16 @@ export function writeUserData(story: UserStory) {
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)
+  let listOfUserStoriesData = setTemplateUserStories()
+  const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
   const listOfVerifiedUsers: string[] = ['John', 'Wilfredo', 'Mark', 'Juan']
   const verifiedPassword: string = '1234'
 
   function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn)
+  }
+  function addUserStory(userStory: UserStory){
+    setUserStories([...userStories, userStory])
   }
     return (
       <NavigationContainer>
@@ -90,19 +98,23 @@ export default function App() {
           <>
             <Stack.Screen
         name='Home'
-        component={HomeTabNavigator}
+        // component={HomeTabNavigator}
         options={{
           // headerStyle:
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-        }}/>
+        }}>
+          {(props) => <HomeTabNavigator {...props} userStoryData={userStories} addUserStory={addUserStory}/>}
+        </Stack.Screen>
         <Stack.Screen
         name='UserStory'
         component={ExpandedUserStory}
         />
         <Stack.Screen
         name="AddUserStoryForm"
-        component={AddUserStoryForm}
-        />
+        // component={AddUserStoryForm}
+        >
+          {(props) => <AddUserStoryForm addUserStory={addUserStory} />}
+        </Stack.Screen>
         <Stack.Screen
         name="AddUserStoryButton"
         component={AddUserStoryButton}

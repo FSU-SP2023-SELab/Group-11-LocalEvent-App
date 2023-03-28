@@ -2,49 +2,32 @@ import React, { useEffect, useState } from 'react'
 import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'react-native'
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
+
+import { TimeIsCorrect } from '../Utils/Functions/Functions';
+import { SelectList } from 'react-native-dropdown-select-list';
 import { writeUserData } from '../App';
 import { getAuth } from 'firebase/auth';
 import { equalTo, getDatabase, onValue, orderByChild, push, query, ref, get } from 'firebase/database';
+
 const dateTemplate = "(MM/DD/YYYY)"
 
-
-
-
-
-function isNumber(char: string){
-    return /^\d+$/.test(char);
-}
-
-
-
-function AddUserStoryForm({changePagePlusAddUserStory}) {
+function AddUserStoryForm({addUserStory}) {
+    const [selected, setSelected] = useState("");
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
+    const [eventDay, setEventDay] = useState('')
     const [eventTime, setEventTime] = useState('')
+    const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const [pictureOfEvent, setPictureOfEvent] = useState('')
+
+
     const navigation = useNavigation()
-    const data = 0
     // const changePage = () =>{
     //     navigation.navigate("Home", {data:data})
     // }
 
-    //made function "async" so that the results can populate from the database before writeUserData is called
-    async function changingPagePlusAddingUserStory(){
-        console.log(eventTime)
-        //Checks to see if time is in correct format
-    if(eventTime.length !== 10)
-        console.log("Wrong Time Format")
-    else if(!isNumber(eventTime.substring(0,2)))
-        console.log("Wrong Time Format")
-    else if(eventTime[2] !== '/')
-        console.log('Wrong Time Format')
-    else if(!isNumber(eventTime.substring(3,5)))
-        console.log('Wrong Time Format')
-    else if(eventTime[5] !== '/')
-        console.log('Wrong Time Format')
-    else if(!isNumber(eventTime.substring(6,10)))
-        console.log('Wrong Time Format')
-    else{
+    function changingPagePlusAddingUserStory(){
+    if(TimeIsCorrect(eventDay)){
         const auth = getAuth();
         const user = auth.currentUser;
         const database = getDatabase();
@@ -72,15 +55,22 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
             pictureOfEvent: pictureOfEvent,
             eventDescription: eventDescription,
             userID: user.uid,
-        };
-            
-        console.log(temp)
+        }
+        setIsEventTimeIncorrect(false)
+        addUserStory(temp)
+        navigation.navigate('Home')
         writeUserData(temp)
     }
+    else{
+        setIsEventTimeIncorrect(true)
+
+    }
 }
-// useEffect(()=>{
-//         changePagePlusAddUserStory(changingPagePlusAddingUserStory(), listOfUserStories)
-//     })
+
+  const data = [
+      {key:'1', value:'AM'},
+      {key:'2', value:'PM'}
+  ]
   return (
     <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -93,12 +83,27 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
         </View> 
         {/* A simple form for the user to input new userStory */}
         <View style={{marginTop : 5}}>
-            <Text style={{fontSize: 25}}> Enter Date Of Event {dateTemplate}</Text>
-            <TextInput onChangeText={(text) => setEventTime(text)} style={{borderWidth: 2, borderColor: 'cyan', height: 30, width: "60%"}}></TextInput>
+            <Text style={{fontSize: 25}}>Enter Date Of Event {dateTemplate}</Text>
+            <TextInput onChangeText={(text) => setEventDay(text)} style={{borderWidth: 2, borderColor: 'cyan', height: 30, width: "60%"}}></TextInput>
+        </View>
+        <View>
+            {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect format {'\n'}Please enter it such that "MM/DD/YYYY"</Text>}
+        </View>
+        <View style={{marginTop: 5}}>
+            <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
+            <View style={styles.timeOfEventInputContainer}>
+                <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}}></TextInput>
+                <SelectList 
+                setSelected={(val) => setSelected(val)} 
+                data={data} 
+                save="value"
+                />
+            </View>
         </View>
         <View style={styles.publishButton}>
             <Button onPress={()=>changingPagePlusAddingUserStory()} title="Publish" color="#9CF22F"/>
         </View>
+        
     </View>
   )
 }
@@ -131,5 +136,9 @@ const styles = StyleSheet.create({
     textFont:{
         fontSize: 40
 
+    },
+    timeOfEventInputContainer:{
+        display: 'flex',
+        flexDirection: 'row'
     }
 })
