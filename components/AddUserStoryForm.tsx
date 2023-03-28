@@ -2,22 +2,14 @@ import React, { useEffect, useState } from 'react'
 import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'react-native'
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
+import { TimeIsCorrect } from '../Utils/Functions/Functions';
 const dateTemplate = "(MM/DD/YYYY)"
 
-
-
-
-
-function isNumber(char: string){
-    return /^\d+$/.test(char);
-}
-
-
-
-function AddUserStoryForm({changePagePlusAddUserStory}) {
+function AddUserStoryForm({addUserStory}) {
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
     const [eventTime, setEventTime] = useState('')
+    const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const navigation = useNavigation()
     const data = 0
     // const changePage = () =>{
@@ -25,21 +17,7 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
     // }
 
     function changingPagePlusAddingUserStory(){
-        console.log(eventTime)
-        //Checks to see if time is in correct format
-    if(eventTime.length !== 10)
-        console.log("Wrong Time Format")
-    else if(!isNumber(eventTime.substring(0,2)))
-        console.log("Wrong Time Format")
-    else if(eventTime[2] !== '/')
-        console.log('Wrong Time Format')
-    else if(!isNumber(eventTime.substring(3,5)))
-        console.log('Wrong Time Format')
-    else if(eventTime[5] !== '/')
-        console.log('Wrong Time Format')
-    else if(!isNumber(eventTime.substring(6,10)))
-        console.log('Wrong Time Format')
-    else{
+    if(TimeIsCorrect(eventTime)){
         const temp : UserStory = {
             id: 32,
             nameOfUser: "John",
@@ -49,13 +27,15 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
             pictureOfEvent: "Naw",
             eventDescription: eventDescription
         }
-        // const temp1 : number = 0
-        changePagePlusAddUserStory(temp)
+        setIsEventTimeIncorrect(false)
+        addUserStory(temp)
+        navigation.navigate('Home')
+    }
+    else{
+        setIsEventTimeIncorrect(true)
     }
 }
-// useEffect(()=>{
-//         changePagePlusAddUserStory(changingPagePlusAddingUserStory(), listOfUserStories)
-//     })
+
   return (
     <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -68,12 +48,20 @@ function AddUserStoryForm({changePagePlusAddUserStory}) {
         </View> 
         {/* A simple form for the user to input new userStory */}
         <View style={{marginTop : 5}}>
-            <Text style={{fontSize: 25}}> Enter Date Of Event {dateTemplate}</Text>
+            <Text style={{fontSize: 25}}>Enter Date Of Event {dateTemplate}</Text>
             <TextInput onChangeText={(text) => setEventTime(text)} style={{borderWidth: 2, borderColor: 'cyan', height: 30, width: "60%"}}></TextInput>
+        </View>
+        <View>
+            {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect format {'\n'}Please enter it such that "MM/DD/YYYY"</Text>}
+        </View>
+        <View style={{marginTop: 5}}>
+            <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
+            <TextInput style={{borderWidth: 2, borderColor: 'red', height: 30, width: "60%"}}></TextInput>
         </View>
         <View style={styles.publishButton}>
             <Button onPress={()=>changingPagePlusAddingUserStory()} title="Publish" color="#9CF22F"/>
         </View>
+        
     </View>
   )
 }
