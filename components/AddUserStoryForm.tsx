@@ -3,26 +3,28 @@ import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'rea
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
 import { TimeIsCorrect } from '../Utils/Functions/Functions';
+import { SelectList } from 'react-native-dropdown-select-list';
 const dateTemplate = "(MM/DD/YYYY)"
 
 function AddUserStoryForm({addUserStory}) {
+    const [selected, setSelected] = useState("");
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
+    const [eventDay, setEventDay] = useState('')
     const [eventTime, setEventTime] = useState('')
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const navigation = useNavigation()
-    const data = 0
     // const changePage = () =>{
     //     navigation.navigate("Home", {data:data})
     // }
 
     function changingPagePlusAddingUserStory(){
-    if(TimeIsCorrect(eventTime)){
+    if(TimeIsCorrect(eventDay)){
         const temp : UserStory = {
             id: 32,
             nameOfUser: "John",
-            timeOfEvent: new Date(eventTime),
-            timePostWasMade: new Date(eventTime),
+            timeOfEvent: new Date(eventDay),
+            timePostWasMade: new Date(eventDay),
             titleOfEvent: eventTitle,
             pictureOfEvent: "Naw",
             eventDescription: eventDescription
@@ -36,6 +38,10 @@ function AddUserStoryForm({addUserStory}) {
     }
 }
 
+  const data = [
+      {key:'1', value:'AM'},
+      {key:'2', value:'PM'}
+  ]
   return (
     <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -49,14 +55,21 @@ function AddUserStoryForm({addUserStory}) {
         {/* A simple form for the user to input new userStory */}
         <View style={{marginTop : 5}}>
             <Text style={{fontSize: 25}}>Enter Date Of Event {dateTemplate}</Text>
-            <TextInput onChangeText={(text) => setEventTime(text)} style={{borderWidth: 2, borderColor: 'cyan', height: 30, width: "60%"}}></TextInput>
+            <TextInput onChangeText={(text) => setEventDay(text)} style={{borderWidth: 2, borderColor: 'cyan', height: 30, width: "60%"}}></TextInput>
         </View>
         <View>
             {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect format {'\n'}Please enter it such that "MM/DD/YYYY"</Text>}
         </View>
         <View style={{marginTop: 5}}>
             <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
-            <TextInput style={{borderWidth: 2, borderColor: 'red', height: 30, width: "60%"}}></TextInput>
+            <View style={styles.timeOfEventInputContainer}>
+                <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}}></TextInput>
+                <SelectList 
+                setSelected={(val) => setSelected(val)} 
+                data={data} 
+                save="value"
+                />
+            </View>
         </View>
         <View style={styles.publishButton}>
             <Button onPress={()=>changingPagePlusAddingUserStory()} title="Publish" color="#9CF22F"/>
@@ -94,5 +107,9 @@ const styles = StyleSheet.create({
     textFont:{
         fontSize: 40
 
+    },
+    timeOfEventInputContainer:{
+        display: 'flex',
+        flexDirection: 'row'
     }
 })
