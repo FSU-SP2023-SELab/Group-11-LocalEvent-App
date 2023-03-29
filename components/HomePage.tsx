@@ -66,8 +66,8 @@ function HomePage({userData, addUserStory}) {
                         </TouchableOpacity> */}
                     </View>
                     <View style={styles.timeOfEventAndTimePostedContainer}>
-                        <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent.toLocaleDateString('en-US')} </Text>
-                        <Text>Posted: {d.timePostWasMade.toLocaleDateString('en-US')}</Text>
+                        <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent} </Text>
+                        <Text>Posted: {d.timePostWasMade}</Text>
                     </View>
                 </View>
             </View>
@@ -77,7 +77,8 @@ function HomePage({userData, addUserStory}) {
         </View>
       </TouchableOpacity> 
     )})
-
+    //d.timeOfEvent.toLocaleDateString('en-US')
+    // d.timePostWasMade.toLocaleDateString('en-US')
     
   return (
     <>

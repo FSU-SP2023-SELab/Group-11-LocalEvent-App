@@ -33,7 +33,7 @@ function AddUserStoryForm({addUserStory}) {
         const database = getDatabase();
         
         let fullName = ''
-        const usersRef = ref(database, "Users/" + user.uid);
+        const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
         await get(usersRef).then((snapshot) => {
         let currentUserData = snapshot.val();
         console.log("currentUserData: " + currentUserData)
@@ -41,17 +41,18 @@ function AddUserStoryForm({addUserStory}) {
             let temp = currentUserData[key]
             fullName += temp + " "
             }
-        }).catch((error) => {
-            console.error(error);
-            });
+        }).catch((error) => console.error(error));
 
         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
-        const dateString = new Date(Date.parse(eventTime))
+        let nowTime = new Date()
+        let tempNowTime = nowTime.toDateString()
+        console.log(typeof(tempNowTime))
         const temp : UserStory = {
             id: id,
             nameOfUser: fullName,
-            timeOfEvent: dateString,
-            timePostWasMade: new Date(),
+            dayOfEvent: eventDay, 
+            timeOfEvent: eventTime,
+            timePostWasMade: tempNowTime,
             titleOfEvent: eventTitle,
             pictureOfEvent: pictureOfEvent,
             eventDescription: eventDescription,
@@ -94,7 +95,7 @@ function AddUserStoryForm({addUserStory}) {
         <View style={{marginTop: 5}}>
             <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
             <View style={styles.timeOfEventInputContainer}>
-                <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}}></TextInput>
+                <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}} onChangeText={(text) => setEventTime(text)}></TextInput>
                 <SelectList 
                 setSelected={(val) => setSelected(val)} 
                 data={data} 

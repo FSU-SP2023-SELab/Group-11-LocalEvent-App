@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View , Text, TextInput, Button} from 'react-native';
 import LoginPage from './components/LoginPage'
 import RegisterPage from './components/RegisterPage'
@@ -16,8 +16,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { get, getDatabase } from 'firebase/database';
 import { UserStory } from './Utils/Interfaces/Interfaces';
-import { setTemplateUserStories } from './Utils/Functions/Functions';
-
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -44,6 +42,7 @@ export function writeUserData(story: UserStory) {
     set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
       nameOfUser: story.nameOfUser,
+      dayOfEvent: story.dayOfEvent,
       timeOfEvent: story.timeOfEvent.toString(),
       timePostWasMade: story.timePostWasMade.toString(),
       titleOfEvent: story.titleOfEvent,
@@ -52,26 +51,44 @@ export function writeUserData(story: UserStory) {
       userID: story.userID,
     });
   }
-
+let tempArr : UserStory[] = []
 
 
 const Stack = createNativeStackNavigator();
 export default function App() {
-  const [isLoggedIn, setLoggedIn] = useState(false)
-  
-//!!! query the database and put the posts in the empty array below
-//change function name !!!
-  let listOfUserStoriesData = setTemplateUserStories()
+  const [isLoggedIn, setLoggedIn] = useState(false)  
+
+  //!!! query the database and put the posts in the empty array below
+  //change function name !!!
   const [userStories, setUserStories] = useState<UserStory[]>([])
 
-  const listOfVerifiedUsers: string[] = ['John', 'Wilfredo', 'Mark', 'Juan']
-  const verifiedPassword: string = '1234'
-
-  function isUser(isLoggedIn: boolean){
-    setLoggedIn(isLoggedIn)
+  async function isUser(isLoggedIn: boolean){
+    setLoggedIn(isLoggedIn);
+    let tempUserStory = []
+    const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
+    await get(usersRef).then((snapshot) => {
+    let currentStoryData = snapshot.val(); 
+    //let currentStoryDataJSON = snapshot.val().toJSON(); 
+    console.log(currentStoryData)
+    for (let key in currentStoryData) {
+        let temp = currentStoryData[key]
+        tempUserStory.push(temp)
+        console.log("This current Value is: " + temp.titleOfEvent) 
+        console.log("This array is currently this: " + tempUserStory[0])
+        // console.log(temp)
+        // tempArr.push(temp)
+        }}).catch((error) => console.error(error));
+    
+    setUserStories(tempUserStory) //currentStoryDataJSON
   }
+
+  useEffect(()=> {
+    setUserStories(tempArr)
+  }, [tempArr])
+
   function addUserStory(userStory: UserStory){
     setUserStories([...userStories, userStory])
+    // fetchAllStories();
   }
     return (
       <NavigationContainer>

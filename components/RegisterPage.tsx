@@ -17,7 +17,7 @@ export default function RegisterPage({navigation}) {
   const [isSamePassword, setSamePasswords] = useState(true)
 
   const handleNewUser = () => {
-    //need to figure out what to do with firstname and lastname
+    //need to figure out what to do with first name and lastname
     if (password !== password_reenter) {
       setSamePasswords(false) //display the error message
     }
