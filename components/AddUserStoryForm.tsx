@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react'
 import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'react-native'
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
+
 import { TimeIsCorrect } from '../Utils/Functions/Functions';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { writeUserData } from '../App';
+import { getAuth } from 'firebase/auth';
+import { equalTo, getDatabase, onValue, orderByChild, push, query, ref, get } from 'firebase/database';
+
 const dateTemplate = "(MM/DD/YYYY)"
 
 function AddUserStoryForm({addUserStory}) {
@@ -13,28 +18,55 @@ function AddUserStoryForm({addUserStory}) {
     const [eventDay, setEventDay] = useState('')
     const [eventTime, setEventTime] = useState('')
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
+    const [pictureOfEvent, setPictureOfEvent] = useState('')
+
+
     const navigation = useNavigation()
     // const changePage = () =>{
     //     navigation.navigate("Home", {data:data})
     // }
 
-    function changingPagePlusAddingUserStory(){
+    async function changingPagePlusAddingUserStory(){
     if(TimeIsCorrect(eventDay)){
+        const auth = getAuth();
+        const user = auth.currentUser;
+        const database = getDatabase();
+        
+        let fullName = ''
+        const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
+        await get(usersRef).then((snapshot) => {
+        let currentUserData = snapshot.val();
+        console.log("currentUserData: " + currentUserData)
+        for (let key in currentUserData) {
+            let temp = currentUserData[key]
+            fullName += temp + " "
+            }
+        }).catch((error) => console.error(error));
+
+        const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
+        let nowTime = new Date()
+        let tempNowTime = nowTime.toDateString()
+        console.log(typeof(tempNowTime))
         const temp : UserStory = {
-            id: 32,
-            nameOfUser: "John",
-            timeOfEvent: new Date(eventDay),
-            timePostWasMade: new Date(eventDay),
+            id: id,
+            nameOfUser: fullName,
+            dayOfEvent: eventDay, 
+            timeOfEvent: eventTime,
+            timePostWasMade: tempNowTime,
             titleOfEvent: eventTitle,
-            pictureOfEvent: "Naw",
-            eventDescription: eventDescription
+            pictureOfEvent: pictureOfEvent,
+            eventDescription: eventDescription,
+            userID: user.uid,
         }
+        console.log(temp)
+        writeUserData(temp)
         setIsEventTimeIncorrect(false)
         addUserStory(temp)
-        navigation.navigate('Home')
+        navigation.navigate('Home') //works fine
     }
     else{
         setIsEventTimeIncorrect(true)
+
     }
 }
 
@@ -63,7 +95,7 @@ function AddUserStoryForm({addUserStory}) {
         <View style={{marginTop: 5}}>
             <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
             <View style={styles.timeOfEventInputContainer}>
-                <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}}></TextInput>
+                <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}} onChangeText={(text) => setEventTime(text)}></TextInput>
                 <SelectList 
                 setSelected={(val) => setSelected(val)} 
                 data={data} 

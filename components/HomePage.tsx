@@ -7,10 +7,9 @@ import styles from '../Utils/Styles/HomePageStyle'
 import AddUserStoryButton from './AddUserStoryButton';
 import AddUserStoryForm from './AddUserStoryForm';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { setTemplateUserStories } from '../Utils/Functions/Functions';
+
 
 function HomePage({userData, addUserStory}) {
-
     const navigation = useNavigation()
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
@@ -53,7 +52,7 @@ function HomePage({userData, addUserStory}) {
         // };  
 
         return(
-      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent.toLocaleString('en-US'), timePostWasMade: d.timePostWasMade.toLocaleDateString('en-US'), titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + i.toString()}>
+      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + i.toString()}>
         <View style={styles.userStoryContainer}>
             <View style={styles.picTitleLikeContainer}>
                     <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={i}></Image> 
@@ -66,8 +65,8 @@ function HomePage({userData, addUserStory}) {
                         </TouchableOpacity> */}
                     </View>
                     <View style={styles.timeOfEventAndTimePostedContainer}>
-                        <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent.toLocaleDateString('en-US')} </Text>
-                        <Text>Posted: {d.timePostWasMade.toLocaleDateString('en-US')}</Text>
+                        <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent} </Text>
+                        <Text>Posted: {d.timePostWasMade}</Text>
                     </View>
                 </View>
             </View>
@@ -77,7 +76,8 @@ function HomePage({userData, addUserStory}) {
         </View>
       </TouchableOpacity> 
     )})
-
+    //d.timeOfEvent.toLocaleDateString('en-US')
+    // d.timePostWasMade.toLocaleDateString('en-US')
     
   return (
     <>
