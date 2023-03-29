@@ -13,9 +13,9 @@ function IsBetween1And12(num: number){
         return false
     return true
 }
-function IsBetween1And31(num: number ){
-  if (eventTime.substring)
-}
+//
+//
+//
 function IsBeforeCurrentDay(){
     let currDay = Date()
 

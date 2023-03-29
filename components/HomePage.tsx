@@ -7,10 +7,9 @@ import styles from '../Utils/Styles/HomePageStyle'
 import AddUserStoryButton from './AddUserStoryButton';
 import AddUserStoryForm from './AddUserStoryForm';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { setTemplateUserStories } from '../Utils/Functions/Functions';
+
 
 function HomePage({userData, addUserStory}) {
-
     const navigation = useNavigation()
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
