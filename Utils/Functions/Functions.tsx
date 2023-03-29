@@ -67,8 +67,15 @@ export const EventTimeIsCorrect = (eventTime: string) =>{
             return false
         else if(!isNumber(eventTime.substring(3,5)))
             return false
-        else
-            return true
+
+        //checks for valid times
+        const hour:number=parseInt(eventTime.substring(0,2))
+        const minute:number=parseInt(eventTime.substring(3,5))
+
+        if(hour<0 || hour>12) return false
+        if(minute<0 || minute>59) return false
+
+        //checks for future time
     }
     else if( eventTime.length === 4){
         if(!isNumber(eventTime[0]))
@@ -77,8 +84,14 @@ export const EventTimeIsCorrect = (eventTime: string) =>{
             return false
         else if(!isNumber(eventTime.substring(2,4)))
             return false
-        else
-            return true
+            
+        //checks for valid time
+        const hour:number=parseInt(eventTime.substring(0))
+        const minute:number=parseInt(eventTime.substring(2,4))
+        if(minute<0 || minute>59) return false
+
+        //checks for future time
+
     }
     else{
         return false
