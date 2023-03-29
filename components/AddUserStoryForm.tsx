@@ -26,7 +26,7 @@ function AddUserStoryForm({addUserStory}) {
     //     navigation.navigate("Home", {data:data})
     // }
 
-    function changingPagePlusAddingUserStory(){
+    async function changingPagePlusAddingUserStory(){
     if(TimeIsCorrect(eventDay)){
         const auth = getAuth();
         const user = auth.currentUser;
@@ -36,6 +36,7 @@ function AddUserStoryForm({addUserStory}) {
         const usersRef = ref(database, "Users/" + user.uid);
         await get(usersRef).then((snapshot) => {
         let currentUserData = snapshot.val();
+        console.log("currentUserData: " + currentUserData)
         for (let key in currentUserData) {
             let temp = currentUserData[key]
             fullName += temp + " "
@@ -56,10 +57,11 @@ function AddUserStoryForm({addUserStory}) {
             eventDescription: eventDescription,
             userID: user.uid,
         }
+        console.log(temp)
+        writeUserData(temp)
         setIsEventTimeIncorrect(false)
         addUserStory(temp)
-        navigation.navigate('Home')
-        writeUserData(temp)
+        navigation.navigate('Home') //works fine
     }
     else{
         setIsEventTimeIncorrect(true)

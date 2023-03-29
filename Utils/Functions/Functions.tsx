@@ -5,6 +5,8 @@ export  function seePassword(password){
 }
 
 // App Functions
+//!!! query the database and put the posts in the empty array below
+//change function name !!!
 export const setTemplateUserStories = () =>{
     const listOfUsers : string[] = ['John', 'Wilfredo', 'Juan', 'Mark']
     const listOfTitles : string[] = ['Lets Party', 'Getting Dirty', 'Water Fiasco', 'Baking with Becky']
@@ -16,12 +18,13 @@ export const setTemplateUserStories = () =>{
     for(var i = 0; i < 10; i++) {
         const temp : UserStory = {
             id: i,
-            nameOfUser : listOfUsers[Math.floor(Math.random() *4)],
-            timeOfEvent: listOfDates[Math.floor(Math.random() *4)],
-            timePostWasMade: listOfDates[Math.floor(Math.random() *4)],
-            titleOfEvent: listOfTitles[Math.floor(Math.random() *4)],
-            pictureOfEvent: listOfPics[Math.floor(Math.random() *2)],
-            eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!"
+            nameOfUser: listOfUsers[Math.floor(Math.random() * 4)],
+            timeOfEvent: listOfDates[Math.floor(Math.random() * 4)],
+            timePostWasMade: listOfDates[Math.floor(Math.random() * 4)],
+            titleOfEvent: listOfTitles[Math.floor(Math.random() * 4)],
+            pictureOfEvent: listOfPics[Math.floor(Math.random() * 2)],
+            eventDescription: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem non praesentium aliquid adipisci. Laboriosam eum, maiores ullam quisquam rerum perferendis debitis tempora fuga natus, molestiae deserunt possimus sunt modi unde!",
+            userID: ""
         }
         listOfUserStoriesData.push(temp)  // Starter Entries 
     }

@@ -40,7 +40,6 @@ const user = auth.currentUser;
 
 //for writing to the database
 import { ref, set } from "firebase/database";
-import { UserStory } from './Utils/Interfaces/Interfaces';
 export function writeUserData(story: UserStory) {
     set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
@@ -59,8 +58,12 @@ export function writeUserData(story: UserStory) {
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)
+  
+//!!! query the database and put the posts in the empty array below
+//change function name !!!
   let listOfUserStoriesData = setTemplateUserStories()
-  const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
+  const [userStories, setUserStories] = useState<UserStory[]>([])
+
   const listOfVerifiedUsers: string[] = ['John', 'Wilfredo', 'Mark', 'Juan']
   const verifiedPassword: string = '1234'
 
