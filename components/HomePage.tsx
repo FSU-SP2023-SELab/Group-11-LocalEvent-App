@@ -9,24 +9,12 @@ import AddUserStoryForm from './AddUserStoryForm';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 
-function HomePage({userData, addUserStory}) {
+function HomePage({listOfAllUserStories}) {
     const navigation = useNavigation()
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
-    // let listOfUserStoriesData = setTemplateUserStories()
-    // const [userStories, setUserStories] = useState<UserStory[]>(listOfUserStoriesData)
-    const [changePage, setChangePage] = useState(true)
-    // const changePagePlusAddUserStory = ( userStory: UserStory ) => {
-    //     // setChangePage(!changePage)  // Changes Page back to Home Page
-    //     addUserStory(userStory)
-    //      // Adds New User Stories
-    // }
-    const changePageFunc = () =>{
-        setChangePage(!changePage)  //Just Changes the Page back to Home Page
-    }
 
-
-    let listOfUserStories: JSX.Element[] = userData.map((d, i) => {
+    let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, i) => {
         
         
         //code handles the use (clicking) of the like button
@@ -70,14 +58,13 @@ function HomePage({userData, addUserStory}) {
                     </View>
                 </View>
             </View>
-            <View style={{height: 20}}>
+            <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
                 <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
+                <Text style={{}}>Likes: {d.id}</Text>
             </View>
         </View>
       </TouchableOpacity> 
     )})
-    //d.timeOfEvent.toLocaleDateString('en-US')
-    // d.timePostWasMade.toLocaleDateString('en-US')
     
   return (
     <>

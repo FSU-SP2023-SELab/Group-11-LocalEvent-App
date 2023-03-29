@@ -39,7 +39,7 @@ const user = auth.currentUser;
 //for writing to the database
 import { ref, set } from "firebase/database";
 export function writeUserData(story: UserStory) {
-    set(ref(database, 'UserStories/' + story.id), {
+    set(ref(database, 'listOfAllUserStories/' + story.id), {
       id: story.id,
       nameOfUser: story.nameOfUser,
       dayOfEvent: story.dayOfEvent,
@@ -60,7 +60,7 @@ export default function App() {
 
   //!!! query the database and put the posts in the empty array below
   //change function name !!!
-  const [userStories, setUserStories] = useState<UserStory[]>([])
+  const [listOfAllUserStories, setlistOfAllUserStories] = useState<UserStory[]>([])
 
   async function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn);
@@ -72,22 +72,22 @@ export default function App() {
     console.log(currentStoryData)
     for (let key in currentStoryData) {
         let temp = currentStoryData[key]
-        tempUserStory.push(temp)
-        console.log("This current Value is: " + temp.titleOfEvent) 
-        console.log("This array is currently this: " + tempUserStory[0])
+        tempUserStory.unshift(temp)
         // console.log(temp)
         // tempArr.push(temp)
         }}).catch((error) => console.error(error));
     
-    setUserStories(tempUserStory) //currentStoryDataJSON
+    setlistOfAllUserStories(tempUserStory) //currentStoryDataJSON
   }
 
   useEffect(()=> {
-    setUserStories(tempArr)
+    setlistOfAllUserStories(tempArr)
   }, [tempArr])
 
   function addUserStory(userStory: UserStory){
-    setUserStories([...userStories, userStory])
+    let tempUserStory = listOfAllUserStories
+    tempUserStory.unshift(userStory)
+    setlistOfAllUserStories(tempUserStory)
     // fetchAllStories();
   }
     return (
@@ -123,7 +123,7 @@ export default function App() {
           // headerStyle:
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         }}>
-          {(props) => <HomeTabNavigator {...props} userStoryData={userStories} addUserStory={addUserStory}/>}
+          {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} addUserStory={addUserStory}/>}
         </Stack.Screen>
         <Stack.Screen
         name='UserStory'
