@@ -72,9 +72,7 @@ export default function App() {
     console.log(currentStoryData)
     for (let key in currentStoryData) {
         let temp = currentStoryData[key]
-        tempUserStory.push(temp)
-        console.log("This current Value is: " + temp.titleOfEvent) 
-        console.log("This array is currently this: " + tempUserStory[0])
+        tempUserStory.unshift(temp)
         // console.log(temp)
         // tempArr.push(temp)
         }}).catch((error) => console.error(error));
@@ -87,7 +85,9 @@ export default function App() {
   }, [tempArr])
 
   function addUserStory(userStory: UserStory){
-    setUserStories([...userStories, userStory])
+    let tempUserStory = userStories
+    tempUserStory.unshift(userStory)
+    setUserStories(tempUserStory)
     // fetchAllStories();
   }
     return (
