@@ -30,7 +30,7 @@ function IsBetween1And12(num: number){
 //}
 
 //checks formatting, valid date inputs, has a future date
-export const TimeIsCorrect = (eventTime: string) =>{
+export const TimeIsCorrect = (eventTime: string, eventHour:string) =>{
     if(eventTime.length !== 10)
         return false
     else if(!isNumber(eventTime.substring(0,2)) || !IsBetween1And12(parseInt(eventTime.substring(0,2))))//if month is not a number or btw 1-12
@@ -45,6 +45,8 @@ export const TimeIsCorrect = (eventTime: string) =>{
         return false
     
     //Checks for valid month and day values
+    else if(!EventTimeIsCorrect(eventHour)) return false
+    
     const month:number=parseInt(eventTime.substring(0,2))
     const day : number=parseInt(eventTime.substring(3,5))
     const year:number=parseInt(eventTime.substring(6,10))
@@ -53,7 +55,10 @@ export const TimeIsCorrect = (eventTime: string) =>{
 
     const inputDate = new Date(year, month - 1, day);
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); //Reset hours, minutes, seconds, and milliseconds
+    
+    currentDate.setHours(0,0,0,0)
+    //if(eventHour.length === 5) currentDate.setHours(parseInt(eventHour.substring(0,2)), parseInt(eventHour.substring(3,5)), 0, 0); //Reset hours, minutes, seconds, and milliseconds
+    //else currentDate.setHours(parseInt(eventHour.substring(0)), parseInt(eventHour.substring(2,4)), 0, 0);
 
     return inputDate.getTime() > currentDate.getTime();//checks for future time
    
@@ -75,7 +80,6 @@ export const EventTimeIsCorrect = (eventTime: string) =>{
         if(hour<0 || hour>12) return false
         if(minute<0 || minute>59) return false
 
-        //checks for future time
     }
     else if( eventTime.length === 4){
         if(!isNumber(eventTime[0]))
@@ -85,17 +89,12 @@ export const EventTimeIsCorrect = (eventTime: string) =>{
         else if(!isNumber(eventTime.substring(2,4)))
             return false
             
-        //checks for valid time
         const hour:number=parseInt(eventTime.substring(0))
         const minute:number=parseInt(eventTime.substring(2,4))
         if(minute<0 || minute>59) return false
-
-        //checks for future time
-
     }
-    else{
-        return false
-    }
+    else return false
+    
 }
 
 // AddUserStoryForm functions

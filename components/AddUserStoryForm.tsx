@@ -27,7 +27,7 @@ function AddUserStoryForm({addUserStory}) {
     // }
 
     async function changingPagePlusAddingUserStory(){
-    if(TimeIsCorrect(eventDay)){
+    if(TimeIsCorrect(eventDay, eventTime)){
         const auth = getAuth();
         const user = auth.currentUser;
         const database = getDatabase();
