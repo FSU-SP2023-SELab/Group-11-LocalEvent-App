@@ -35,7 +35,7 @@ function IsBetween1And12(num: number){
 
 }*/
 //checks formatting, valid date inputs, 
-export const TimeIsCorrect = (eventTime: string, eventHour:string, key:number) =>{
+export const TimeIsCorrect = (eventTime: string, eventHour:string,) =>{
     if(eventTime.length !== 10)
         return false
     else if(!isNumber(eventTime.substring(0,2)) || !IsBetween1And12(parseInt(eventTime.substring(0,2))))//if month is not a number or btw 1-12
