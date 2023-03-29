@@ -29,8 +29,13 @@ function IsBetween1And12(num: number){
 //    let currDay = Date()
 //}
 
-//checks formatting, valid date inputs, has a future date
-export const TimeIsCorrect = (eventTime: string, eventHour:string) =>{
+/*export const futureTime=(key:number, eventTime:string)
+{
+    const hour:number=parseInt(eventTime.substring(0))
+
+}*/
+//checks formatting, valid date inputs, 
+export const TimeIsCorrect = (eventTime: string, eventHour:string, key:number) =>{
     if(eventTime.length !== 10)
         return false
     else if(!isNumber(eventTime.substring(0,2)) || !IsBetween1And12(parseInt(eventTime.substring(0,2))))//if month is not a number or btw 1-12
@@ -57,16 +62,36 @@ export const TimeIsCorrect = (eventTime: string, eventHour:string) =>{
     const currentDate = new Date();
     
     currentDate.setHours(0,0,0,0)
-    //if(eventHour.length === 5) currentDate.setHours(parseInt(eventHour.substring(0,2)), parseInt(eventHour.substring(3,5)), 0, 0); //Reset hours, minutes, seconds, and milliseconds
+    /*if(eventHour.length === 5) 
+    {
+        if(key===2)var hour:number=parseInt(eventHour.substring(0,0))+12
+        else 
+        {
+        var hour:number=parseInt(eventHour.substring(0,1))
+        const minute:number=parseInt(eventHour.substring(3,5))
+        }
+        currentDate.setHours(parseInt(eventHour.substring(0,1)), parseInt(eventHour.substring(3,5)), 0, 0); 
+    }
+    else
+    {
+        if(key===2)var hour:number=parseInt(eventHour.substring(0))+12
+        else 
+        {
+        var hour:number=parseInt(eventHour.substring(0,0))
+        const minute:number=parseInt(eventHour.substring(2,4))
+        }
+        currentDate.setHours(hour, minute, 0, 0); 
+    }
+        //Reset hours, minutes, seconds, and milliseconds
     //else currentDate.setHours(parseInt(eventHour.substring(0)), parseInt(eventHour.substring(2,4)), 0, 0);
-
+    */
     return inputDate.getTime() > currentDate.getTime();//checks for future time
    
 }
 
 export const EventTimeIsCorrect = (eventTime: string) =>{
     if(eventTime.length === 5){
-        if(!isNumber(eventTime.substring(0,2)))
+        if(!isNumber(eventTime.substring(0,1)))
             return false
         else if(eventTime[2] !== ':')
             return false
@@ -74,7 +99,7 @@ export const EventTimeIsCorrect = (eventTime: string) =>{
             return false
 
         //checks for valid times
-        const hour:number=parseInt(eventTime.substring(0,2))
+        const hour:number=parseInt(eventTime.substring(0,1))
         const minute:number=parseInt(eventTime.substring(3,5))
 
         if(hour<0 || hour>12) return false
@@ -89,7 +114,7 @@ export const EventTimeIsCorrect = (eventTime: string) =>{
         else if(!isNumber(eventTime.substring(2,4)))
             return false
             
-        const hour:number=parseInt(eventTime.substring(0))
+        const hour:number=parseInt(eventTime.substring(0,0))
         const minute:number=parseInt(eventTime.substring(2,4))
         if(minute<0 || minute>59) return false
     }
