@@ -1,4 +1,5 @@
-import { getDatabase, ref, runTransaction } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
+import { child, getDatabase, ref, runTransaction, update } from 'firebase/database';
 import React, { useState } from 'react'
 import {View,Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
 function ExpandedUserStory({route}) {
@@ -23,6 +24,11 @@ function ExpandedUserStory({route}) {
             setLiked(!liked);
             const db = getDatabase();
             const storyRef = ref(db, `UserStories/${id}/numOfLikes`);
+            
+            const auth = getAuth();
+            const user = auth.currentUser;
+            const usersRef = ref(database, "Users/" + user.uid);
+            const likedStoriesRef = child(usersRef, "LikedStories");
 
             //a story with no likes may have value -1 instead of zero
             //the code needs a way of knowing if a logged in user has liked a specific story or not  
@@ -30,6 +36,17 @@ function ExpandedUserStory({route}) {
               return liked ? currentValue - 1 : currentValue + 1;
             }).then(() => {
               console.log('Transaction completed successfully!');
+            
+              // Update the LikedStories array of the current user
+              if (liked) {
+                update(likedStoriesRef, {
+                  [id]: null
+                });
+              } else {
+                update(likedStoriesRef, {
+                  [id]: true
+                });
+              }
             }).catch((error) => {
               console.error('Transaction failed: ', error);
             });
