@@ -20,45 +20,30 @@ function AddUserStoryForm({addUserStory}) {
     const [isEventDayIncorrect, setIsEventDayIncorrect] = useState(false)
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const [pictureOfEvent, setPictureOfEvent] = useState('')
-    let newUserStory: UserStory = null
-    // useEffect(() => {
-    //     if( newUserStory === null) {
-    //         console.log("We null")
-    //     }
-    //     else{
-    //         console.log("Did we add user?")
-    //         addUserStory(newUserStory)
-    //         writeUserData(newUserStory)
-    //     }
-    // }, [newUserStory])
+
 
     const navigation = useNavigation()
-    // const changePage = () =>{
-    //     navigation.navigate("Home", {data:data})
-    // }
  
-    function validateEntry(){
-        if(DayIsCorrect(eventDay)){//checks for correct day
-            setIsEventDayIncorrect(false)
-            
-            if(EventTimeIsCorrect(eventTime)){//checks for correct time
-                setIsEventTimeIncorrect(false)
-                
-                if(futureTime(eventDay)){//checks valid future time
-                    changingPagePlusAddingUserStory()
-                }
-                else {//throws past time input error 
-                    // setIsEventTimeIncorrect(true)//CHECK THIS
-                }
-            }
-            else { //throws invalid time(hours/minutes) error
-                setIsEventTimeIncorrect(true)
-            }
-        }
-        //else throw wrong format/invalid input error
-        else{
+    function validateEntry(){       
+        if(!EventTimeIsCorrect(eventTime) && !DayIsCorrect(eventDay)){
             setIsEventDayIncorrect(true)
+            setIsEventTimeIncorrect(true)
+            return;
         }
+        if(!DayIsCorrect(eventDay)){
+            setIsEventDayIncorrect(true)
+            setIsEventTimeIncorrect(false)
+            return;
+        }
+        if(!EventTimeIsCorrect(eventTime)){
+            setIsEventTimeIncorrect(true)
+            setIsEventDayIncorrect(false)
+            return;
+        }
+ 
+        setIsEventDayIncorrect(false)
+        setIsEventTimeIncorrect(false)
+        changingPagePlusAddingUserStory()
     }
 
     async function changingPagePlusAddingUserStory() {
@@ -93,58 +78,10 @@ function AddUserStoryForm({addUserStory}) {
             eventDescription: eventDescription,
             userID: user.uid,
         }
-
         addUserStory(temp)
         writeUserData(temp)
-        newUserStory = temp
         navigation.navigate('Home')
     }
-
-// STARTS WORKING CODE
-//     async function changingPagePlusAddingUserStory(){
-//     if(TimeIsCorrect(eventDay)){
-//         const auth = getAuth();
-//         const user = auth.currentUser;
-//         const database = getDatabase();
-        
-//         let fullName = ''
-//         const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
-//         await get(usersRef).then((snapshot) => {
-//         let currentUserData = snapshot.val();
-//         console.log("currentUserData: " + currentUserData)
-//         for (let key in currentUserData) {
-//             let temp = currentUserData[key]
-//             fullName += temp + " "
-//             }
-//         }).catch((error) => console.error(error));
-
-//         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
-//         let nowTime = new Date()
-//         let tempNowTime = nowTime.toDateString()
-//         console.log(typeof(tempNowTime))
-//         const temp : UserStory = {
-//             id: id,
-//             nameOfUser: fullName,
-//             dayOfEvent: eventDay, 
-//             timeOfEvent: eventTime,
-//             timePostWasMade: tempNowTime,
-//             titleOfEvent: eventTitle,
-//             pictureOfEvent: pictureOfEvent,
-//             eventDescription: eventDescription,
-//             userID: user.uid,
-//         }
-//         console.log(temp)
-//         writeUserData(temp)
-//         setIsEventDayIncorrect(false)
-//         addUserStory(temp)
-//         navigation.navigate('Home') //works fine
-//     }
-//     else{
-//         setIsEventDayIncorrect(true)
-
-//     }
-// }
-// ENDS WORKING CODE
 
 
   const data = [
