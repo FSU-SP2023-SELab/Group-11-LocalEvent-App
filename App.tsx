@@ -41,7 +41,7 @@ import { ref, set } from "firebase/database";
 export function writeUserData(story: UserStory) {
     set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
-      numOfLike: story.numOfLikes,
+      numOfLikes: story.numOfLikes,
       nameOfUser: story.nameOfUser,
       dayOfEvent: story.dayOfEvent,
       timeOfEvent: story.timeOfEvent.toString(),
