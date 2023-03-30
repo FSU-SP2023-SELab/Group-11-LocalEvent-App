@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'rea
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
 
-import { EventTimeIsCorrect, DayIsCorrect, futureTime } from '../Utils/Functions/Functions';
+import { EventTimeIsCorrect, DayIsCorrect, isFutureTime } from '../Utils/Functions/Functions';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { writeUserData } from '../App';
 import { getAuth } from 'firebase/auth';
@@ -19,6 +19,7 @@ function AddUserStoryForm({addUserStory}) {
     const [eventTime, setEventTime] = useState('')
     const [isEventDayIncorrect, setIsEventDayIncorrect] = useState(false)
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
+    const [isEventDayBeforeToday, setIsEventDayBeforeToday] = useState(false)
     const [pictureOfEvent, setPictureOfEvent] = useState('')
 
 
@@ -38,6 +39,12 @@ function AddUserStoryForm({addUserStory}) {
         if(!EventTimeIsCorrect(eventTime)){
             setIsEventTimeIncorrect(true)
             setIsEventDayIncorrect(false)
+            return;
+        }
+        if(!isFutureTime(eventDay)){
+            setIsEventDayIncorrect(false)
+            setIsEventTimeIncorrect(false)
+            setIsEventDayBeforeToday(true)
             return;
         }
  
@@ -105,6 +112,7 @@ function AddUserStoryForm({addUserStory}) {
         </View>
         <View>
             {isEventDayIncorrect && <Text style={{color: "red"}}>The time entered is incorrect format {'\n'}Please enter it such that "MM/DD/YYYY"</Text>}
+            {isEventDayBeforeToday && <Text style={{color: 'red'}}>You have entered a day before today{'\n'}Please enter a day from today onwards</Text>}
         </View>
         <View style={{marginTop: 5}}>
             <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
@@ -119,7 +127,7 @@ function AddUserStoryForm({addUserStory}) {
         </View>
         <View>
             <Text>
-                {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect {'\n'}Please enter the time correctly</Text>}
+                {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect {'\n'}Please enter the time such that "HH:MM"</Text>}
             </Text>
         </View>
         <View style={styles.publishButton}>

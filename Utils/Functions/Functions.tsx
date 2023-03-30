@@ -130,7 +130,7 @@ export const EventTimeIsCorrect = (eventTime: string) => {
     else return false
 }
 
-export const futureTime = (eventDay:string)=> {
+export const isFutureTime = (eventDay:string)=> {
     const month:number=parseInt(eventDay.substring(0,2))
     const day : number=parseInt(eventDay.substring(3,5))
     const year:number=parseInt(eventDay.substring(6,10))
