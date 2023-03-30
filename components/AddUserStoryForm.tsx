@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Button, TouchableHighlight, TextInput} from 'rea
 import { UserStory } from '../Utils/Interfaces/Interfaces';
 import { useNavigation } from '@react-navigation/native';
 
-import { TimeIsCorrect } from '../Utils/Functions/Functions';
+import { EventTimeIsCorrect, DayIsCorrect, futureTime } from '../Utils/Functions/Functions';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { writeUserData } from '../App';
 import { getAuth } from 'firebase/auth';
@@ -12,11 +12,12 @@ import { equalTo, getDatabase, onValue, orderByChild, push, query, ref, get } fr
 const dateTemplate = "(MM/DD/YYYY)"
 
 function AddUserStoryForm({addUserStory}) {
-    const [selected, setSelected] = useState("");
+    const [selectedAMPM, setSelectedAMPM] = useState("");
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
     const [eventDay, setEventDay] = useState('')
     const [eventTime, setEventTime] = useState('')
+    const [isEventDayIncorrect, setIsEventDayIncorrect] = useState(false)
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const [pictureOfEvent, setPictureOfEvent] = useState('')
 
@@ -25,12 +26,35 @@ function AddUserStoryForm({addUserStory}) {
     // const changePage = () =>{
     //     navigation.navigate("Home", {data:data})
     // }
+ 
+    function validateEntry(){
+        if(DayIsCorrect(eventDay)){//checks for correct day
+            setIsEventDayIncorrect(false)
+            
+            if(EventTimeIsCorrect(eventTime)){//checks for correct time
+                setIsEventTimeIncorrect(false)
+                
+                if(futureTime(eventDay)){//checks valid future time
+                    changingPagePlusAddingUserStory()
+                }
+                else {//throws past time input error 
+                    // setIsEventTimeIncorrect(true)//CHECK THIS
+                }
+            }
+            else { //throws invalid time(hours/minutes) error
+                setIsEventTimeIncorrect(true)
+            }
+        }
+        //else throw wrong format/invalid input error
+        else{
+            setIsEventDayIncorrect(true)
+        }
+    }
 
-    async function changingPagePlusAddingUserStory(){
-    if(TimeIsCorrect(eventDay, eventTime)){
+    async function changingPagePlusAddingUserStory() {
         const auth = getAuth();
         const user = auth.currentUser;
-        const database = getDatabase();
+        const database = getDatabase()
         
         let fullName = ''
         const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
@@ -42,17 +66,17 @@ function AddUserStoryForm({addUserStory}) {
             fullName += temp + " "
             }
         }).catch((error) => console.error(error));
-
+        let newEventTime = eventTime + selectedAMPM
         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
-        let nowTime = new Date()
-        let tempNowTime = nowTime.toDateString()
+        let tempNowTime = new Date()
+        let nowTime = tempNowTime.toDateString()
         console.log(typeof(tempNowTime))
         const temp : UserStory = {
             id: id,
             nameOfUser: fullName,
             dayOfEvent: eventDay, 
-            timeOfEvent: eventTime,
-            timePostWasMade: tempNowTime,
+            timeOfEvent: newEventTime,
+            timePostWasMade: nowTime,
             titleOfEvent: eventTitle,
             pictureOfEvent: pictureOfEvent,
             eventDescription: eventDescription,
@@ -60,15 +84,57 @@ function AddUserStoryForm({addUserStory}) {
         }
         console.log(temp)
         writeUserData(temp)
-        setIsEventTimeIncorrect(false)
+        setIsEventDayIncorrect(false)
         addUserStory(temp)
-        navigation.navigate('Home') //works fine
+        navigation.navigate('Home')
     }
-    else{
-        setIsEventTimeIncorrect(true)
 
-    }
-}
+// STARTS WORKING CODE
+//     async function changingPagePlusAddingUserStory(){
+//     if(TimeIsCorrect(eventDay)){
+//         const auth = getAuth();
+//         const user = auth.currentUser;
+//         const database = getDatabase();
+        
+//         let fullName = ''
+//         const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
+//         await get(usersRef).then((snapshot) => {
+//         let currentUserData = snapshot.val();
+//         console.log("currentUserData: " + currentUserData)
+//         for (let key in currentUserData) {
+//             let temp = currentUserData[key]
+//             fullName += temp + " "
+//             }
+//         }).catch((error) => console.error(error));
+
+//         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
+//         let nowTime = new Date()
+//         let tempNowTime = nowTime.toDateString()
+//         console.log(typeof(tempNowTime))
+//         const temp : UserStory = {
+//             id: id,
+//             nameOfUser: fullName,
+//             dayOfEvent: eventDay, 
+//             timeOfEvent: eventTime,
+//             timePostWasMade: tempNowTime,
+//             titleOfEvent: eventTitle,
+//             pictureOfEvent: pictureOfEvent,
+//             eventDescription: eventDescription,
+//             userID: user.uid,
+//         }
+//         console.log(temp)
+//         writeUserData(temp)
+//         setIsEventDayIncorrect(false)
+//         addUserStory(temp)
+//         navigation.navigate('Home') //works fine
+//     }
+//     else{
+//         setIsEventDayIncorrect(true)
+
+//     }
+// }
+// ENDS WORKING CODE
+
 
   const data = [
       {key:'1', value:'AM'},
@@ -90,21 +156,26 @@ function AddUserStoryForm({addUserStory}) {
             <TextInput onChangeText={(text) => setEventDay(text)} style={{borderWidth: 2, borderColor: 'cyan', height: 30, width: "60%"}}></TextInput>
         </View>
         <View>
-            {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect format {'\n'}Please enter it such that "MM/DD/YYYY"</Text>}
+            {isEventDayIncorrect && <Text style={{color: "red"}}>The time entered is incorrect format {'\n'}Please enter it such that "MM/DD/YYYY"</Text>}
         </View>
         <View style={{marginTop: 5}}>
             <Text style={{fontSize: 25}}>Enter Time Of Event</Text>
             <View style={styles.timeOfEventInputContainer}>
                 <TextInput style={{borderWidth: 2, borderColor: 'red', height: 45, width: "60%"}} onChangeText={(text) => setEventTime(text)}></TextInput>
                 <SelectList 
-                setSelected={(val) => setSelected(val)} 
+                setSelected={(val) => setSelectedAMPM(val)} 
                 data={data} 
                 save="value"
                 />
             </View>
         </View>
+        <View>
+            <Text>
+                {isEventTimeIncorrect && <Text style={{color: "red"}}>The time entered is incorrect {'\n'}Please enter the time correctly</Text>}
+            </Text>
+        </View>
         <View style={styles.publishButton}>
-            <Button onPress={()=>changingPagePlusAddingUserStory()} title="Publish" color="#9CF22F"/>
+            <Button onPress={()=>validateEntry()} title="Publish" color="#9CF22F"/>
         </View>
         
     </View>
