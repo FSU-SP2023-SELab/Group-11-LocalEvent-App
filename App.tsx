@@ -39,8 +39,9 @@ const user = auth.currentUser;
 //for writing to the database
 import { ref, set } from "firebase/database";
 export function writeUserData(story: UserStory) {
-    set(ref(database, 'listOfAllUserStories/' + story.id), {
+    set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
+      numOfLike: story.numOfLikes,
       nameOfUser: story.nameOfUser,
       dayOfEvent: story.dayOfEvent,
       timeOfEvent: story.timeOfEvent.toString(),
@@ -57,11 +58,20 @@ let tempArr : UserStory[] = []
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)  
-
+  let tempUserStory
   //!!! query the database and put the posts in the empty array below
   //change function name !!!
   const [listOfAllUserStories, setlistOfAllUserStories] = useState<UserStory[]>([])
-
+  const [singleUserStory, setSingleUserStory] = useState<UserStory>(null)
+  useEffect(()=> {
+    if(singleUserStory === null){
+      console.log("No UserStory Added")
+    }
+    else{
+      setlistOfAllUserStories([singleUserStory, ...listOfAllUserStories])
+      setSingleUserStory(null)
+    }
+  }, [singleUserStory])
   async function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn);
     let tempUserStory = []
@@ -69,25 +79,22 @@ export default function App() {
     await get(usersRef).then((snapshot) => {
     let currentStoryData = snapshot.val(); 
     //let currentStoryDataJSON = snapshot.val().toJSON(); 
-    console.log(currentStoryData)
+    //console.log(currentStoryData)
     for (let key in currentStoryData) {
         let temp = currentStoryData[key]
         tempUserStory.unshift(temp)
         // console.log(temp)
         // tempArr.push(temp)
         }}).catch((error) => console.error(error));
-    
+    console.log(tempUserStory)
     setlistOfAllUserStories(tempUserStory) //currentStoryDataJSON
   }
 
-  useEffect(()=> {
-    setlistOfAllUserStories(tempArr)
-  }, [tempArr])
-
   function addUserStory(userStory: UserStory){
-    let tempUserStory = listOfAllUserStories
-    tempUserStory.unshift(userStory)
-    setlistOfAllUserStories(tempUserStory)
+    // let tempUserStory = listOfAllUserStories
+    // tempUserStory.unshift(userStory)
+    // setlistOfAllUserStories(tempUserStory)
+    setSingleUserStory(userStory)
     // fetchAllStories();
   }
     return (
@@ -123,7 +130,7 @@ export default function App() {
           // headerStyle:
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         }}>
-          {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} addUserStory={addUserStory}/>}
+          {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} />}
         </Stack.Screen>
         <Stack.Screen
         name='UserStory'

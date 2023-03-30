@@ -1,5 +1,6 @@
 export interface UserStory{
     id: number,
+    numOfLikes: number,
     userID: string,
     nameOfUser: string,
     dayOfEvent: string,

@@ -3,12 +3,13 @@ import React from 'react'
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import styles from '../Utils/Styles/HomePageStyle'
-function HomePageTopPosts({listOfAllUserStories}) {
+function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
 
     const navigation =  useNavigation()
-    let myList = listOfAllUserStories
-    myList.sort((p1,p2) => p1.id < p2.id ? 1 : p1.id > p2.id ? -1 : 0 )
-    let listOfUserStories: JSX.Element[] = myList.map((d, i) => {
+    let myList = listOfRandomLikes
+    // myList.sort((p1,p2) => p1.id > p2.id ? 1 : p1.id < p2.id ? -1 : 0 )
+    myList.sort((a,b) => b-a)
+    let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, i) => {
         
     
     //code handles the use (clicking) of the like button
@@ -54,7 +55,7 @@ function HomePageTopPosts({listOfAllUserStories}) {
         </View>
         <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
               <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
-              <Text style={{}}>Likes: {d.id}</Text>
+              <Text style={{}}>Likes: {myList[i]}</Text>
         </View>
     </View>
   </TouchableOpacity> 

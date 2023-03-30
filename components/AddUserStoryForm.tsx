@@ -20,7 +20,17 @@ function AddUserStoryForm({addUserStory}) {
     const [isEventDayIncorrect, setIsEventDayIncorrect] = useState(false)
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const [pictureOfEvent, setPictureOfEvent] = useState('')
-
+    let newUserStory: UserStory = null
+    // useEffect(() => {
+    //     if( newUserStory === null) {
+    //         console.log("We null")
+    //     }
+    //     else{
+    //         console.log("Did we add user?")
+    //         addUserStory(newUserStory)
+    //         writeUserData(newUserStory)
+    //     }
+    // }, [newUserStory])
 
     const navigation = useNavigation()
     // const changePage = () =>{
@@ -60,7 +70,7 @@ function AddUserStoryForm({addUserStory}) {
         const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
         await get(usersRef).then((snapshot) => {
         let currentUserData = snapshot.val();
-        console.log("currentUserData: " + currentUserData)
+        //console.log("currentUserData: " + currentUserData)
         for (let key in currentUserData) {
             let temp = currentUserData[key]
             fullName += temp + " "
@@ -70,9 +80,10 @@ function AddUserStoryForm({addUserStory}) {
         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
         let tempNowTime = new Date()
         let nowTime = tempNowTime.toDateString()
-        console.log(typeof(tempNowTime))
+        //console.log(typeof(tempNowTime))
         const temp : UserStory = {
             id: id,
+            numOfLikes: 0,
             nameOfUser: fullName,
             dayOfEvent: eventDay, 
             timeOfEvent: newEventTime,
@@ -82,10 +93,10 @@ function AddUserStoryForm({addUserStory}) {
             eventDescription: eventDescription,
             userID: user.uid,
         }
-        console.log(temp)
-        writeUserData(temp)
-        setIsEventDayIncorrect(false)
+
         addUserStory(temp)
+        writeUserData(temp)
+        newUserStory = temp
         navigation.navigate('Home')
     }
 

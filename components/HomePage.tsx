@@ -9,7 +9,7 @@ import AddUserStoryForm from './AddUserStoryForm';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 
-function HomePage({listOfAllUserStories}) {
+function HomePage({listOfAllUserStories, listOfRandomLikes}) {
     const navigation = useNavigation()
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
@@ -60,7 +60,7 @@ function HomePage({listOfAllUserStories}) {
             </View>
             <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
                 <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
-                <Text style={{}}>Likes: {d.id}</Text>
+                <Text style={{}}>Likes: {Number(d.numOfLikes) + Math.floor(Math.random() * 20) + 1}</Text>
             </View>
         </View>
       </TouchableOpacity> 
