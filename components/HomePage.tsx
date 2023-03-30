@@ -14,7 +14,7 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
 
     const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
 
-    let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, i) => {
+    let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, index) => {
         
         
         //code handles the use (clicking) of the like button
@@ -40,10 +40,10 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
         // };  
 
         return(
-      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + i.toString()}>
+      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + index.toString()}>
         <View style={styles.userStoryContainer}>
             <View style={styles.picTitleLikeContainer}>
-                    <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={i}></Image> 
+                    <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={index}></Image> 
                 <View style={styles.informationAboutEventContainer}>
                     <View style={styles.nameOfEventAndLikeButtonContainer}>
                         <Text>{d.titleOfEvent}</Text>
@@ -60,7 +60,8 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
             </View>
             <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
                 <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
-                <Text style={{}}>Likes: {Number(d.numOfLikes) + Math.floor(Math.random() * 20) + 1}</Text>
+                {/* <Text style={{}}>Likes: {Number(d.numOfLikes) + Math.floor(Math.random() * 20) + 1}</Text> */}
+                <Text style={{}}>Likes: {listOfRandomLikes[index]}</Text>
             </View>
         </View>
       </TouchableOpacity> 
