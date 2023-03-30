@@ -58,9 +58,6 @@ let tempArr : UserStory[] = []
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)  
-  let tempUserStory
-  //!!! query the database and put the posts in the empty array below
-  //change function name !!!
   const [listOfAllUserStories, setlistOfAllUserStories] = useState<UserStory[]>([])
   const [singleUserStory, setSingleUserStory] = useState<UserStory>(null)
   useEffect(()=> {
@@ -72,30 +69,24 @@ export default function App() {
       setSingleUserStory(null)
     }
   }, [singleUserStory])
+
+
   async function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn);
     let tempUserStory = []
     const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
     await get(usersRef).then((snapshot) => {
     let currentStoryData = snapshot.val(); 
-    //let currentStoryDataJSON = snapshot.val().toJSON(); 
-    //console.log(currentStoryData)
     for (let key in currentStoryData) {
         let temp = currentStoryData[key]
         tempUserStory.unshift(temp)
-        // console.log(temp)
-        // tempArr.push(temp)
-        }}).catch((error) => console.error(error));
-    console.log(tempUserStory)
+        }
+    }).catch((error) => console.error(error));
     setlistOfAllUserStories(tempUserStory) //currentStoryDataJSON
   }
 
   function addUserStory(userStory: UserStory){
-    // let tempUserStory = listOfAllUserStories
-    // tempUserStory.unshift(userStory)
-    // setlistOfAllUserStories(tempUserStory)
     setSingleUserStory(userStory)
-    // fetchAllStories();
   }
     return (
       <NavigationContainer>

@@ -10,29 +10,6 @@ function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
     // myList.sort((p1,p2) => p1.id > p2.id ? 1 : p1.id < p2.id ? -1 : 0 )
     myList.sort((a,b) => b-a)
     let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, index) => {
-        
-    
-    //code handles the use (clicking) of the like button
-    //but the post is changing after being liked
-    
-    /*
-    *
-    *
-    *   Code Below broke the Program. It complained that there too many 
-    *   Re-Renders. Maybe we can hold this in a non-useState array?
-    *   Or maybe do a useEffect in order to have that be rendered POST
-    *   Page renders?
-    * 
-    * 
-    */
-
-    // const [isLiked, setIsLiked] = useState(likeStatus[d.id]);
-    // const handlePress = () => {
-    //     const updatedLikeStatus = [...likeStatus];
-    //     updatedLikeStatus[d.id] = !isLiked;
-    //     setLikeStatus(updatedLikeStatus);
-    //     setIsLiked(!isLiked);
-    // };  
 
     return(
   <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + index.toString()}>
@@ -42,10 +19,6 @@ function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
             <View style={styles.informationAboutEventContainer}>
                 <View style={styles.nameOfEventAndLikeButtonContainer}>
                     <Text>{d.titleOfEvent}</Text>
-
-                    {/* <TouchableOpacity onPress={handlePress} key={i}>
-                               <Icon name={likeStatus[d.id] ? 'heart' : 'heart-o'} size={24} color={likeStatus[d.id] ? 'red' : 'black'} />
-                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.timeOfEventAndTimePostedContainer}>
                     <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent} </Text>
@@ -61,11 +34,6 @@ function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
   </TouchableOpacity> 
 )})
   return (
-    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    //     <Text>
-    //         This is where the top posts of the week will go
-    //     </Text>
-    // </View>
     <ScrollView>
       {listOfUserStories}
     </ScrollView>
