@@ -23,7 +23,7 @@ function HomeTabNavigator({listOfAllUserStories}) {
             name="RealHome"
             // component={HomePage}
             options={{
-              title: ''
+              title: 'All Posts'
             }}
             >
               {(props) => <HomePage {...props} listOfAllUserStories={listOfAllUserStories} listOfRandomLikes = {listOfRandomLikes}/>}
