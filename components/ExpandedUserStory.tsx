@@ -10,8 +10,6 @@ function ExpandedUserStory({route, RefreshPage}) {
   const auth = getAuth();
   const user = auth.currentUser;
   const storyRef = ref(db, "UserStories/" + id + "/numOfLikes");
-  const usersRef = ref(db, "Users/" + user.uid);
-  const likedStoriesRefWithID = ref(db, "Users/LikedStories" + id);
   const likedStoriesRef = ref(db, "Users/" + user.uid +"/LikedStories");
 
   const [liked, setLiked] = useState(false);
@@ -38,21 +36,21 @@ function ExpandedUserStory({route, RefreshPage}) {
     // adding 1 or subtracting 1 based on like value
     await runTransaction(storyRef, (currentValue) => {
       if ( currentValue > 0 )
-      return liked ? currentValue - 1 : currentValue + 1;
-    else 
+        return liked ? currentValue - 1 : currentValue + 1;
+      else 
         return liked ? currentValue : currentValue + 1;
     }).then(() => {
       console.log('HandleLike ran succesfully');
       
       // Update the user's liked stories if necessary
-      if (!liked) {
+      if (!liked) 
         update(likedStoriesRef, { [id]: true });
-      }
       else 
         update(likedStoriesRef, { [id]: false }); //should just remove it instead 
 
       // Update the liked state based on the new value
       setLiked(!liked);
+      RefreshPage()
     }).catch((error) => {
       console.error('HandleLike did NOT run succesfully: ', error);
     });
@@ -69,7 +67,7 @@ function ExpandedUserStory({route, RefreshPage}) {
         
         <TouchableOpacity
           style={[styles.likeButton, { backgroundColor: liked ? 'red' : 'white' }]}
-          onPress={() => { RefreshPage() }}
+          onPress={() => { handleLike() }} //added handle like because that is what alters the database
         >
           <Text style={[styles.likeButtonText, { color: liked ? 'white' : 'black' }]}>
             {liked ? 'Unlike' : 'Like'}
