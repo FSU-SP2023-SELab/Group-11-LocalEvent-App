@@ -3,10 +3,13 @@ import React from 'react'
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import styles from '../Utils/Styles/HomePageStyle'
+import { UserStory } from '../Utils/Interfaces/Interfaces'
 function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
 
     const navigation =  useNavigation()
-    let myList = listOfAllUserStories
+    let myList : UserStory[] = []
+    for(let i = 0; i < listOfAllUserStories.length; i++)
+      myList.push(listOfAllUserStories[i])
     myList.sort((p1,p2) => p1.numOfLikes < p2.numOfLikes ? 1 : p1.numOfLikes > p2.numOfLikes ? -1 : 0 )
     let listOfUserStories: JSX.Element[] = myList.map((d, index) => {
 
