@@ -1,13 +1,62 @@
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { getAuth } from 'firebase/auth';
-import { child, getDatabase, ref, runTransaction, update } from 'firebase/database';
-import React, { useState } from 'react'
+import { child, get, getDatabase, onValue, orderByChild, ref, runTransaction, update } from 'firebase/database';
+import React, { useEffect, useState } from 'react'
 import {View,Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
-function ExpandedUserStory({route}) {
+function ExpandedUserStory({route, likedAUserStory}) {
   //added id and numOfLikes to the parameter list and passed them from HomePage.tsx in the onPress()
   const {nameOfUser, timeOfEvent, timePostWasMade, titleOfEvent, eventDescription, numOfLikes, id} = route.params
-  const [liked, setLiked] = useState(false);
-  const database = getDatabase();
+  const db = getDatabase();
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const storyRef = ref(db, "UserStories/" + id + "/numOfLikes");
+  const usersRef = ref(db, "Users/" + user.uid);
+  const likedStoriesRefWithID = ref(db, "Users/LikedStories" + id);
+  const likedStoriesRef = ref(db, "Users/" + user.uid +"/LikedStories");
 
+  const [liked, setLiked] = useState(false);
+  // Listen for changes in the `liked` state and update `initialLikeValue` accordingly
+  
+  const fetchLikeValue = async () => {
+    await get(likedStoriesRef).then((snapshot) => {
+      let currentLikedData = snapshot.val();
+      if (currentLikedData[id] === true) { //the key is the post ID 
+        setLiked(true)
+        // console.log(currentLikedData[id])
+        // console.log(id)
+      }
+    }).then(() => {
+      console.log('Database read succesful');
+    }).catch((error) => {
+      console.error('Transaction failed: ', error);
+    });
+  }
+
+  fetchLikeValue();
+  
+  const handleLike = async () => {
+    // adding 1 or subtracting 1 based on like value
+    await runTransaction(storyRef, (currentValue) => {
+      if ( currentValue > 0 )
+      return liked ? currentValue - 1 : currentValue + 1;
+    else 
+        return liked ? currentValue : currentValue + 1;
+    }).then(() => {
+      console.log('HandleLike ran succesfully');
+      
+      // Update the user's liked stories if necessary
+      if (!liked) {
+        update(likedStoriesRef, { [id]: true });
+      }
+      else 
+        update(likedStoriesRef, { [id]: false }); //should just remove it instead 
+
+      // Update the liked state based on the new value
+      setLiked(!liked);
+    }).catch((error) => {
+      console.error('HandleLike did NOT run succesfully: ', error);
+    });
+  };
 
   return (
     <View style={styles.expandedUserStoryPageContainer}>
@@ -20,37 +69,7 @@ function ExpandedUserStory({route}) {
         
         <TouchableOpacity
           style={[styles.likeButton, { backgroundColor: liked ? 'red' : 'white' }]}
-          onPress={() => {
-            setLiked(!liked);
-            const db = getDatabase();
-            const storyRef = ref(db, `UserStories/${id}/numOfLikes`);
-            
-            const auth = getAuth();
-            const user = auth.currentUser;
-            const usersRef = ref(database, "Users/" + user.uid);
-            const likedStoriesRef = child(usersRef, "LikedStories");
-
-            //a story with no likes may have value -1 instead of zero
-            //the code needs a way of knowing if a logged in user has liked a specific story or not  
-            runTransaction(storyRef, (currentValue) => {
-              return liked ? currentValue - 1 : currentValue + 1;
-            }).then(() => {
-              console.log('Transaction completed successfully!');
-            
-              // Update the LikedStories array of the current user
-              if (liked) {
-                update(likedStoriesRef, {
-                  [id]: null
-                });
-              } else {
-                update(likedStoriesRef, {
-                  [id]: true
-                });
-              }
-            }).catch((error) => {
-              console.error('Transaction failed: ', error);
-            });
-          }}
+          onPress={() => { likedAUserStory() }}
         >
           <Text style={[styles.likeButtonText, { color: liked ? 'white' : 'black' }]}>
             {liked ? 'Unlike' : 'Like'}
