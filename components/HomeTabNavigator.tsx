@@ -22,6 +22,9 @@ function HomeTabNavigator({listOfAllUserStories}) {
             <Tab.Screen
             name="RealHome"
             // component={HomePage}
+            options={{
+              title: ''
+            }}
             >
               {(props) => <HomePage {...props} listOfAllUserStories={listOfAllUserStories} listOfRandomLikes = {listOfRandomLikes}/>}
             </Tab.Screen>

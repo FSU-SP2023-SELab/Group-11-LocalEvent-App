@@ -149,7 +149,7 @@ export default function App() {
         name='Home'
         // component={HomeTabNavigator}
         options={{
-          // headerStyle:
+          title: ""
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         }}>
           {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} />}
