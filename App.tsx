@@ -158,7 +158,7 @@ export default function App() {
         name='UserStory'
         // component={ExpandedUserStory}
         >
-          {(props) => <ExpandedUserStory {...props} likedAUserStory={likedAUserStory} />}
+          {(props) => <ExpandedUserStory {...props} RefreshPage={RefreshPage} />}
         </Stack.Screen>
         <Stack.Screen
         name="AddUserStoryForm"

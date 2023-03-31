@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { child, get, getDatabase, onValue, orderByChild, ref, runTransaction, update } from 'firebase/database';
 import React, { useEffect, useState } from 'react'
 import {View,Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
-function ExpandedUserStory({route, likedAUserStory}) {
+function ExpandedUserStory({route, RefreshPage}) {
   //added id and numOfLikes to the parameter list and passed them from HomePage.tsx in the onPress()
   const {nameOfUser, timeOfEvent, timePostWasMade, titleOfEvent, eventDescription, numOfLikes, id} = route.params
   const db = getDatabase();
@@ -69,7 +69,7 @@ function ExpandedUserStory({route, likedAUserStory}) {
         
         <TouchableOpacity
           style={[styles.likeButton, { backgroundColor: liked ? 'red' : 'white' }]}
-          onPress={() => { likedAUserStory() }}
+          onPress={() => { RefreshPage() }}
         >
           <Text style={[styles.likeButtonText, { color: liked ? 'white' : 'black' }]}>
             {liked ? 'Unlike' : 'Like'}
