@@ -1,4 +1,4 @@
-import React from 'react'
+ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 //import { createDrawerNavigator} from '@react-navigation/drawer'
 import HomePage from './HomePage'

@@ -74,7 +74,6 @@ export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)  
   const [listOfAllUserStories, setlistOfAllUserStories] = useState<UserStory[]>([])
   const [singleUserStory, setSingleUserStory] = useState<UserStory>(null)
-  const [singleLike, setSingleLike] = useState<boolean>(null)
   useEffect(()=> {
     if(singleUserStory === null){
       // console.log("No UserStory Added")
@@ -83,13 +82,7 @@ export default function App() {
       setlistOfAllUserStories([singleUserStory, ...listOfAllUserStories])
       setSingleUserStory(null)
     }
-    if(singleLike === null){
-      // lslsconsole.log("no Like Changed")
-    }
-    else{
-      setSingleLike(null)
-    }
-  }, [singleUserStory, singleLike])
+  }, [singleUserStory])
   
 
   
@@ -149,7 +142,7 @@ export default function App() {
         name='Home'
         // component={HomeTabNavigator}
         options={{
-          // headerStyle:
+          title: ""
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         }}>
           {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} />}
@@ -179,7 +172,6 @@ export default function App() {
       </NavigationContainer>
     
   );
-  
 }
 
 
