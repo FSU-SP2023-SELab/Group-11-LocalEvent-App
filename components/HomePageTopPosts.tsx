@@ -6,10 +6,9 @@ import styles from '../Utils/Styles/HomePageStyle'
 function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
 
     const navigation =  useNavigation()
-    let myList = listOfRandomLikes
-    // myList.sort((p1,p2) => p1.id > p2.id ? 1 : p1.id < p2.id ? -1 : 0 )
-    myList.sort((a,b) => b-a)
-    let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, index) => {
+    let myList = listOfAllUserStories
+    myList.sort((p1,p2) => p1.numOfLikes < p2.numOfLikes ? 1 : p1.numOfLikes > p2.numOfLikes ? -1 : 0 )
+    let listOfUserStories: JSX.Element[] = myList.map((d, index) => {
 
     return(
   <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + index.toString()}>
@@ -28,7 +27,7 @@ function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
         </View>
         <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
               <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
-              <Text style={{}}>Likes: {myList[index]}</Text>
+              <Text style={{}}>Likes: {d.numOfLikes}</Text>
         </View>
     </View>
   </TouchableOpacity> 
