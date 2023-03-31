@@ -19,3 +19,21 @@ export default function StartPage({navigation}) {
    
   )
 }
+
+// export namespace KustoQueryService {
+//   export const getKustoQueryResults = async (msalContext: IMsalContext, transactionId: string) => {
+//     let accessToken = await SignInService.requestAccessToken(msalContext)
+//     let headers: AxiosRequestHeaders = { Authorization: `Bearer ${accessToken}` };
+//     let params = { transactionId };
+//     let response = await axios.get(`${webServerConfig.baseUrl}/api/kustoquery`, { headers, params });
+//     return response.data;
+//   }
+// }
+
+// async function FetchData( TransactionId:string ) {
+//   setIsLoading(true);
+//   const results: ArrowList = await KustoQueryService.getKustoQueryResults(msalContext, TransactionId)
+//   setOriginalArrowList(results.arrowList)
+//   setArrowList(results.arrowList)
+//   setIsLoading(false);
+// }

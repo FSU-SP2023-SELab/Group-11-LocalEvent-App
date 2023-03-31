@@ -32,8 +32,8 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
             </View>
             <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
                 <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
-                {/* <Text style={{}}>Likes: {Number(d.numOfLikes) + Math.floor(Math.random() * 20) + 1}</Text> */}
-                <Text style={{}}>Likes: {listOfRandomLikes[index]}</Text>
+                <Text style={{}}>Likes: {Number(d.numOfLikes)}</Text>
+                {/* <Text style={{}}>Likes: {listOfRandomLikes[index]}</Text> */}
             </View>
         </View>
       </TouchableOpacity> 
