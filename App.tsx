@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View , Text, TextInput, Button} from 'react-native';
+import { AppState, StyleSheet, View , Text, TextInput, Button, NativeModules} from 'react-native';
 import LoginPage from './components/LoginPage'
 import RegisterPage from './components/RegisterPage'
 import StartPage from './components/StartingPage'
@@ -15,7 +15,11 @@ import AddUserStoryButton from './components/AddUserStoryButton';
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { get, getDatabase } from 'firebase/database';
-import { UserStory } from './Utils/Interfaces/Interfaces';
+import { UserStory, LatLong } from './Utils/Interfaces/Interfaces';
+import * as LocationPerms from 'expo-location';
+import { BackHandler } from 'react-native';
+
+LocationPerms.enableNetworkProviderAsync()
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -39,6 +43,13 @@ const user = auth.currentUser;
 //for writing to the database
 import { ref, set } from "firebase/database";
 export function writeUserData(story: UserStory) {
+
+  geocode(story.address).then(resp=> {
+    const latlong: LatLong = {
+      latitude: resp[0].latitude,
+      longitude: resp[0].longitude,
+    }
+
     set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
       numOfLike: story.numOfLikes,
@@ -49,14 +60,69 @@ export function writeUserData(story: UserStory) {
       titleOfEvent: story.titleOfEvent,
       pictureOfEvent: story.pictureOfEvent,
       eventDescription: story.eventDescription,
+      latlong: latlong,
       userID: story.userID,
+    });}).catch(error => {
+      console.error(error);
     });
   }
 let tempArr : UserStory[] = []
 
+const geocode = async(address) => {
+  const geocodedLocation = await LocationPerms.geocodeAsync(address)
+  console.log(geocodedLocation)
+  return geocodedLocation;
+}
 
 const Stack = createNativeStackNavigator();
 export default function App() {
+
+  console.log("starting App")
+  
+
+    //High Precision Location Detection
+    //I dont entirely understand why this is a thing
+    LocationPerms.hasServicesEnabledAsync().then(resp => {
+      
+      console.log(resp)
+      if (resp==false)
+      {
+        console.log("Asking for Permissions")
+        LocationPerms.enableNetworkProviderAsync()
+      }
+      else
+      {
+        console.log("Network Services On")
+      }
+
+    }).catch(error => {
+      console.error(error);
+    });
+
+    //Acutally
+    LocationPerms.getForegroundPermissionsAsync().then(resp => {
+      
+      console.log(resp)
+      if (resp.granted==false)
+      {
+        console.log("Asking for Permissions")
+        LocationPerms.requestForegroundPermissionsAsync().then(resp2=> {
+          if (resp2.granted==false)
+          {
+            console.log("//Todo Shutdown App instead of backout")
+            BackHandler.exitApp()
+          }
+        }).catch(error => {console.error(error);});
+      }
+      else
+      {
+        console.log("already have permissions")
+      }
+
+    }).catch(error => {
+      console.error(error);
+    });
+
   const [isLoggedIn, setLoggedIn] = useState(false)  
   let tempUserStory
   //!!! query the database and put the posts in the empty array below

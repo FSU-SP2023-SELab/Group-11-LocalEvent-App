@@ -21,6 +21,7 @@ function AddUserStoryForm({addUserStory}) {
     const [isEventTimeIncorrect, setIsEventTimeIncorrect] = useState(false)
     const [isEventDayBeforeToday, setIsEventDayBeforeToday] = useState(false)
     const [pictureOfEvent, setPictureOfEvent] = useState('')
+    const [address, setAddress]= useState('')
 
 
     const navigation = useNavigation()
@@ -83,6 +84,7 @@ function AddUserStoryForm({addUserStory}) {
             titleOfEvent: eventTitle,
             pictureOfEvent: pictureOfEvent,
             eventDescription: eventDescription,
+            address: address,
             userID: user.uid,
         }
         addUserStory(temp)
@@ -104,7 +106,11 @@ function AddUserStoryForm({addUserStory}) {
         <View style={{marginTop: 5}}>
             <Text style={{fontSize: 37}}>Enter Description Of Event </Text>
             <TextInput onChangeText={(text) => setEventDescription(text)} blurOnSubmit={true} multiline={true} style={{textAlign:'auto', textAlignVertical: 'top', borderWidth: 2, borderColor: 'lime' ,height: 200, width: '60%'}}> </TextInput>
-        </View> 
+        </View>
+        <View style={styles.titleContainer}>
+            <Text style={{fontSize: 37}}>Enter Address:</Text>
+            <TextInput  onChangeText={(text) => setAddress(text)}  style={{borderWidth: 2, borderColor: 'pink', height: 45, width: "50%"}}></TextInput>
+        </View>
         {/* A simple form for the user to input new userStory */}
         <View style={{marginTop : 5}}>
             <Text style={{fontSize: 25}}>Enter Date Of Event {dateTemplate}</Text>
