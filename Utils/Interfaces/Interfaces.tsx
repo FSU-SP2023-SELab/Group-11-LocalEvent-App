@@ -1,3 +1,5 @@
+import { Float } from "react-native/Libraries/Types/CodegenTypes";
+
 export interface UserStory{
     id: number,
     numOfLikes: number,
@@ -9,4 +11,10 @@ export interface UserStory{
     titleOfEvent: string,
     pictureOfEvent: string,
     eventDescription: string,
+    address: string,
+}
+
+export interface LatLong {
+    latitude: Float,
+    longitude: Float,
 }
