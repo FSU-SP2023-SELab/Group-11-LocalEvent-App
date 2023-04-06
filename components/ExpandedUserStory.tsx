@@ -3,6 +3,11 @@ import { getAuth } from 'firebase/auth';
 import { child, get, getDatabase, onValue, orderByChild, ref, runTransaction, update } from 'firebase/database';
 import React, { useEffect, useState } from 'react'
 import {View,Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
+
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+
 function ExpandedUserStory({route, RefreshPage}) {
   //added id and numOfLikes to the parameter list and passed them from HomePage.tsx in the onPress()
   const {nameOfUser, timeOfEvent, timePostWasMade, titleOfEvent, eventDescription, numOfLikes, id} = route.params
@@ -66,12 +71,15 @@ function ExpandedUserStory({route, RefreshPage}) {
         </View>
         
         <TouchableOpacity
-          style={[styles.likeButton, { backgroundColor: liked ? 'red' : 'white' }]}
-          onPress={() => { handleLike() }} //added handle like because that is what alters the database
+        style={styles.likeButton}
+        onPress={() => { handleLike() }} //added handle like because that is what alters the database
+        activeOpacity={0.6}
         >
-          <Text style={[styles.likeButtonText, { color: liked ? 'white' : 'black' }]}>
-            {liked ? 'Unlike' : 'Like'}
-          </Text>
+        <FontAwesomeIcon
+        icon={faHeart}
+        size={24}
+        color={liked ? 'red' : 'lightgray'}
+        />
         </TouchableOpacity>
 
         <View style={styles.titleContainer}>
@@ -110,9 +118,7 @@ const styles= StyleSheet.create({
     height: '10%',
   },
   likeButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
+    padding: 8,
   },
   likeButtonText: {
     color: 'black',
