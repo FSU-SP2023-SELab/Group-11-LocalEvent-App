@@ -52,7 +52,7 @@ export function writeUserData(story: UserStory) {
 
     set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
-      numOfLike: story.numOfLikes,
+      numOfLikes: story.numOfLikes,
       nameOfUser: story.nameOfUser,
       dayOfEvent: story.dayOfEvent,
       timeOfEvent: story.timeOfEvent.toString(),
@@ -68,10 +68,24 @@ export function writeUserData(story: UserStory) {
   }
 let tempArr : UserStory[] = []
 
+
 const geocode = async(address) => {
   const geocodedLocation = await LocationPerms.geocodeAsync(address)
   console.log(geocodedLocation)
   return geocodedLocation;
+}
+async function FetchAllUserStories(){
+  let allUserStory = []
+  let tempUserStory : UserStory[] = []
+  const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
+  await get(usersRef).then((snapshot) => {
+  let currentStoryData = snapshot.val(); 
+  for (let key in currentStoryData) {
+      let temp = currentStoryData[key]
+      tempUserStory.unshift(temp)
+      }
+  }).catch((error) => console.error(error));
+  return tempUserStory;
 }
 
 const Stack = createNativeStackNavigator();
@@ -124,45 +138,46 @@ export default function App() {
     });
 
   const [isLoggedIn, setLoggedIn] = useState(false)  
-  let tempUserStory
-  //!!! query the database and put the posts in the empty array below
-  //change function name !!!
   const [listOfAllUserStories, setlistOfAllUserStories] = useState<UserStory[]>([])
   const [singleUserStory, setSingleUserStory] = useState<UserStory>(null)
   useEffect(()=> {
     if(singleUserStory === null){
-      console.log("No UserStory Added")
+      // console.log("No UserStory Added")
     }
     else{
       setlistOfAllUserStories([singleUserStory, ...listOfAllUserStories])
       setSingleUserStory(null)
     }
   }, [singleUserStory])
+  
+
+  
+  
+  async function RefreshPage(isLiked: boolean){
+    // console.log("Liked Button Clicked")
+    let tempUserStory : UserStory[] = await FetchAllUserStories()
+    setlistOfAllUserStories(tempUserStory)
+    // console.log("This is inside of the liked userStory function",tempUserStory)
+    // setSingleLike(true)
+  }
+  function addUserStory(userStory: UserStory){
+    setSingleUserStory(userStory)
+  }
   async function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn);
     let tempUserStory = []
     const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
     await get(usersRef).then((snapshot) => {
     let currentStoryData = snapshot.val(); 
-    //let currentStoryDataJSON = snapshot.val().toJSON(); 
-    //console.log(currentStoryData)
     for (let key in currentStoryData) {
         let temp = currentStoryData[key]
         tempUserStory.unshift(temp)
-        // console.log(temp)
-        // tempArr.push(temp)
-        }}).catch((error) => console.error(error));
-    console.log(tempUserStory)
+        }
+    }).catch((error) => console.error(error));
     setlistOfAllUserStories(tempUserStory) //currentStoryDataJSON
   }
 
-  function addUserStory(userStory: UserStory){
-    // let tempUserStory = listOfAllUserStories
-    // tempUserStory.unshift(userStory)
-    // setlistOfAllUserStories(tempUserStory)
-    setSingleUserStory(userStory)
-    // fetchAllStories();
-  }
+  
     return (
       <NavigationContainer>
       <Stack.Navigator>
@@ -193,15 +208,17 @@ export default function App() {
         name='Home'
         // component={HomeTabNavigator}
         options={{
-          // headerStyle:
+          title: ""
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         }}>
           {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} />}
         </Stack.Screen>
         <Stack.Screen
         name='UserStory'
-        component={ExpandedUserStory}
-        />
+        // component={ExpandedUserStory}
+        >
+          {(props) => <ExpandedUserStory {...props} RefreshPage={RefreshPage} />}
+        </Stack.Screen>
         <Stack.Screen
         name="AddUserStoryForm"
         // component={AddUserStoryForm}
@@ -221,7 +238,6 @@ export default function App() {
       </NavigationContainer>
     
   );
-  
 }
 
 

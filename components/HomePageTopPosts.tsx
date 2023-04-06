@@ -3,49 +3,24 @@ import React from 'react'
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import styles from '../Utils/Styles/HomePageStyle'
+import { UserStory } from '../Utils/Interfaces/Interfaces'
 function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
 
     const navigation =  useNavigation()
-    let myList = listOfRandomLikes
-    // myList.sort((p1,p2) => p1.id > p2.id ? 1 : p1.id < p2.id ? -1 : 0 )
-    myList.sort((a,b) => b-a)
-    let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, index) => {
-        
-    
-    //code handles the use (clicking) of the like button
-    //but the post is changing after being liked
-    
-    /*
-    *
-    *
-    *   Code Below broke the Program. It complained that there too many 
-    *   Re-Renders. Maybe we can hold this in a non-useState array?
-    *   Or maybe do a useEffect in order to have that be rendered POST
-    *   Page renders?
-    * 
-    * 
-    */
-
-    // const [isLiked, setIsLiked] = useState(likeStatus[d.id]);
-    // const handlePress = () => {
-    //     const updatedLikeStatus = [...likeStatus];
-    //     updatedLikeStatus[d.id] = !isLiked;
-    //     setLikeStatus(updatedLikeStatus);
-    //     setIsLiked(!isLiked);
-    // };  
+    let myList : UserStory[] = []
+    for(let i = 0; i < listOfAllUserStories.length; i++)
+      myList.push(listOfAllUserStories[i])
+    myList.sort((p1,p2) => p1.numOfLikes < p2.numOfLikes ? 1 : p1.numOfLikes > p2.numOfLikes ? -1 : 0 )
+    let listOfUserStories: JSX.Element[] = myList.map((d, index) => {
 
     return(
-  <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription})} key={"UserStory " + index.toString()}>
+  <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription, numOfLikes: d.numOfLikes, id: d.id})} key={"UserStory " + index.toString()}>
     <View style={styles.userStoryContainer}>
         <View style={styles.picTitleLikeContainer}>
                 <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={index}></Image> 
             <View style={styles.informationAboutEventContainer}>
                 <View style={styles.nameOfEventAndLikeButtonContainer}>
                     <Text>{d.titleOfEvent}</Text>
-
-                    {/* <TouchableOpacity onPress={handlePress} key={i}>
-                               <Icon name={likeStatus[d.id] ? 'heart' : 'heart-o'} size={24} color={likeStatus[d.id] ? 'red' : 'black'} />
-                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.timeOfEventAndTimePostedContainer}>
                     <Text style={{textAlign:'left'}}> Starts: {d.timeOfEvent} </Text>
@@ -55,17 +30,12 @@ function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
         </View>
         <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
               <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
-              <Text style={{}}>Likes: {myList[index]}</Text>
+              <Text style={{}}>Likes: {d.numOfLikes}</Text>
         </View>
     </View>
   </TouchableOpacity> 
 )})
   return (
-    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    //     <Text>
-    //         This is where the top posts of the week will go
-    //     </Text>
-    // </View>
     <ScrollView>
       {listOfUserStories}
     </ScrollView>

@@ -1,4 +1,4 @@
-import React from 'react'
+ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 //import { createDrawerNavigator} from '@react-navigation/drawer'
 import HomePage from './HomePage'
@@ -22,6 +22,9 @@ function HomeTabNavigator({listOfAllUserStories}) {
             <Tab.Screen
             name="RealHome"
             // component={HomePage}
+            options={{
+              title: 'All Posts'
+            }}
             >
               {(props) => <HomePage {...props} listOfAllUserStories={listOfAllUserStories} listOfRandomLikes = {listOfRandomLikes}/>}
             </Tab.Screen>
