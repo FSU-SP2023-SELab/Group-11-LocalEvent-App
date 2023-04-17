@@ -17,7 +17,11 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { get, getDatabase } from 'firebase/database';
 import { UserStory, LatLong } from './Utils/Interfaces/Interfaces';
 import * as LocationPerms from 'expo-location';
-import { BackHandler } from 'react-native';
+import { BackHandler, Platform} from 'react-native';
+import * as process from 'process';
+
+
+
 
 LocationPerms.enableNetworkProviderAsync()
 
@@ -42,6 +46,7 @@ const user = auth.currentUser;
 
 //for writing to the database
 import { ref, set } from "firebase/database";
+import { err } from 'react-native-svg/lib/typescript/xml';
 export function writeUserData(story: UserStory) {
 
   geocode(story.address).then(resp=> {
@@ -68,24 +73,81 @@ export function writeUserData(story: UserStory) {
   }
 let tempArr : UserStory[] = []
 
+async function monitorLocation(){
+
+  console.log("Getting Position")
+  let locationSubscription = await LocationPerms.watchPositionAsync(
+    { accuracy: LocationPerms.Accuracy.Low, timeInterval: 1000, distanceInterval: 10 },
+    location => {
+      console.log(location);
+    });
+
+  }
 
 const geocode = async(address) => {
   const geocodedLocation = await LocationPerms.geocodeAsync(address)
   console.log(geocodedLocation)
   return geocodedLocation;
 }
+
+function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 3958.8; // Earth's radius in Miles
+  const φ1 = toRadians(lat1);
+  const φ2 = toRadians(lat2);
+  const Δφ = toRadians(lat2 - lat1);
+  const Δλ = toRadians(lon2 - lon1);
+
+  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const d = R * c; // Distance in Miles
+
+  return d;
+}
+
+function toRadians(degrees: number): number {
+  return degrees * Math.PI / 180;
+}
+
 async function FetchAllUserStories(){
-  let allUserStory = []
-  let tempUserStory : UserStory[] = []
-  const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
-  await get(usersRef).then((snapshot) => {
-  let currentStoryData = snapshot.val(); 
-  for (let key in currentStoryData) {
-      let temp = currentStoryData[key]
-      tempUserStory.unshift(temp)
+  const MAXDISTANCE=50
+
+
+    let currLoc=await LocationPerms.getLastKnownPositionAsync().catch((error) => console.error(error));
+
+    const latlong: LatLong = {
+      latitude: currLoc.coords.latitude, //Why my IDE say that coords doesnt exist?
+      longitude: currLoc.coords.longitude,
+    }
+
+    console.log(latlong)
+
+    let tempUserStory = []
+    const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
+    await get(usersRef).then((snapshot) => {
+    let currentStoryData = snapshot.val(); 
+    for (let key in currentStoryData) {
+        let temp = currentStoryData[key]
+        tempUserStory.unshift(temp)
+        }
+    }).catch((error) => console.error(error));
+
+    let locationCensoredUserStory = []
+
+    for (const entry of tempUserStory)
+    {
+      let distance=haversine(latlong.latitude,latlong.longitude,entry["latlong"]["latitude"],entry["latlong"]["longitude"])
+      console.log(entry["titleOfEvent"], " - Distance from User: ", distance)
+      if (distance<MAXDISTANCE)
+      {
+        locationCensoredUserStory.push(entry)
       }
-  }).catch((error) => console.error(error));
-  return tempUserStory;
+    }
+
+    return (locationCensoredUserStory)
 }
 
 const Stack = createNativeStackNavigator();
@@ -123,14 +185,23 @@ export default function App() {
         LocationPerms.requestForegroundPermissionsAsync().then(resp2=> {
           if (resp2.granted==false)
           {
-            console.log("//Todo Shutdown App instead of backout")
-            BackHandler.exitApp()
+            if (Platform.OS === 'ios') 
+              {
+                console.log("//iOS boys please let me know if this closes")
+                process.exit(0)
+              }
+            else
+              {
+                console.log("//Todo Shutdown App instead of backout")
+                BackHandler.exitApp();
+              }
           }
         }).catch(error => {console.error(error);});
       }
       else
       {
         console.log("already have permissions")
+        monitorLocation();
       }
 
     }).catch(error => {
@@ -153,6 +224,7 @@ export default function App() {
 
   
   
+  
   async function RefreshPage(isLiked: boolean){
     // console.log("Liked Button Clicked")
     let tempUserStory : UserStory[] = await FetchAllUserStories()
@@ -163,18 +235,14 @@ export default function App() {
   function addUserStory(userStory: UserStory){
     setSingleUserStory(userStory)
   }
+
+
   async function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn);
-    let tempUserStory = []
-    const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
-    await get(usersRef).then((snapshot) => {
-    let currentStoryData = snapshot.val(); 
-    for (let key in currentStoryData) {
-        let temp = currentStoryData[key]
-        tempUserStory.unshift(temp)
-        }
-    }).catch((error) => console.error(error));
-    setlistOfAllUserStories(tempUserStory) //currentStoryDataJSON
+    
+    let userStories= await FetchAllUserStories()
+    
+    setlistOfAllUserStories(userStories) //currentStoryDataJSON
   }
 
   
