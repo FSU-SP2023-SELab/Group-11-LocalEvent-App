@@ -18,6 +18,9 @@ function HomeTabNavigator({listOfAllUserStories, refreshPage}) {
     listOfRandomLikes.push(Math.floor((Math.random()*10))+ 1) 
   }
   let navigation = useNavigation()
+  function myRefreshPage(){
+    refreshPage()
+  }
 
   return (
         <Tab.Navigator>
@@ -32,7 +35,7 @@ function HomeTabNavigator({listOfAllUserStories, refreshPage}) {
                   color="#0000FF"/>
               ),
               headerRight: () => (
-                <Button onPress={() => refreshPage}
+                <Button onPress={() => myRefreshPage()}
                   title="Refresh"
                   color="#0000FF"/>
               ),

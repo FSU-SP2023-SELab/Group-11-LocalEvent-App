@@ -39,7 +39,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-var MAXDISTANCE=50
 const auth = getAuth(app);
 const database = getDatabase(app);
 const user = auth.currentUser;
@@ -48,6 +47,7 @@ const user = auth.currentUser;
 import { ref, set } from "firebase/database";
 import { err } from 'react-native-svg/lib/typescript/xml';
 import Settings from './components/Settings';
+import { once } from 'process';
 export function writeUserData(story: UserStory) {
 
   geocode(story.address).then(resp=> {
@@ -113,8 +113,43 @@ function toRadians(degrees: number): number {
   return degrees * Math.PI / 180;
 }
 
-async function FetchAllUserStories(){
+async function FetchPrefferedDistance(){
+  console.log("Fetching Distance")
+  let auth = getAuth();
+  let user = auth.currentUser;
 
+  const usersDistanceRef = ref(database, "Users/" + user.uid);
+  try{
+    await get(usersDistanceRef).then((snapshot) => {
+      let currentDistanceData = snapshot.val();
+      console.log("currentDistanceData: ", currentDistanceData)
+      console.log("This is what MAXDistance will be: ",currentDistanceData["distancePreference"])
+      return currentDistanceData["distancePreference"]
+    }).catch((error) => console.error(error));
+  }
+  catch(error){ 
+    console.error("Error in FetchPrefferedDistance: ", error)
+    return 50;
+   }
+}
+
+async function FetchAllUserStories(){
+    // console.log("Fetching Stories ANYTHING!!!!????")
+    let MAXDISTANCE = 50
+    // const usersDistanceRef = ref(database, "Users/" + user.uid);
+    // try{
+    //   await get(usersDistanceRef).then((snapshot) => {
+    //     let currentDistanceData = snapshot.val();
+    //     MAXDISTANCE = currentDistanceData["distance"]
+    //     console.log(MAXDISTANCE)
+    //   }).catch((error) => console.error(error));
+    // }
+    // catch(error){ 
+    //   console.error("Error in FetchAllUserStories: ", error)
+    //  }
+    // MAXDISTANCE = await FetchPrefferedDistance()
+    // console.log(MAXDISTANCE)
+    console.log("Max Distance: ", MAXDISTANCE)
 
 
     let currLoc=await LocationPerms.getLastKnownPositionAsync().catch((error) => console.error(error));
@@ -229,8 +264,14 @@ export default function App() {
   
   async function RefreshPage(isLiked: boolean){
     // console.log("Liked Button Clicked")
-    let tempUserStory : UserStory[] = await FetchAllUserStories()
-    setlistOfAllUserStories(tempUserStory)
+    try{
+      let tempUserStory : UserStory[] = await FetchAllUserStories()
+      setlistOfAllUserStories(tempUserStory)
+    }
+    catch{
+      console.log("Error in RefreshPage")
+    }
+    
     // console.log("This is inside of the liked userStory function",tempUserStory)
     // setSingleLike(true)
   }
@@ -243,6 +284,7 @@ export default function App() {
     setLoggedIn(isLoggedIn);
     
     let userStories= await FetchAllUserStories()
+    console.log("This is inside of the isUser function",userStories)
     
     setlistOfAllUserStories(userStories) //currentStoryDataJSON
   }

@@ -1,16 +1,28 @@
+import { useNavigation } from '@react-navigation/native'
+import { getAuth } from 'firebase/auth'
+import { getDatabase, ref, set, update } from 'firebase/database'
 import React, { useState } from 'react'
 import {View, Text, TextInput, Button} from 'react-native'
 
 function Settings() {
   const [distancePreference, setDistancePreference] = useState(0)
   const [distancePreferenceError, setDistancePreferenceError] = useState(false)
-
-  function validateEntry(){
+  let navigation = useNavigation()
+  async function validateEntry(){
     if(isNaN(distancePreference)){
       setDistancePreferenceError(true)
       return;
     }
+    const auth = getAuth();
+    const user = auth.currentUser;
     setDistancePreferenceError(false)
+
+    
+    let usersRef = ref(getDatabase(), 'Users/' + user.uid)
+    await update(usersRef, {
+      distancePreference: distancePreference
+    }).catch((error) => { console.error(error) })
+    navigation.navigate('Home')
   }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
