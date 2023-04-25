@@ -39,7 +39,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
+var MAXDISTANCE=50
 const auth = getAuth(app);
 const database = getDatabase(app);
 const user = auth.currentUser;
@@ -113,7 +113,7 @@ function toRadians(degrees: number): number {
 }
 
 async function FetchAllUserStories(){
-  const MAXDISTANCE=50
+
 
 
     let currLoc=await LocationPerms.getLastKnownPositionAsync().catch((error) => console.error(error));
@@ -189,6 +189,7 @@ export default function App() {
               {
                 console.log("//iOS boys please let me know if this closes")
                 process.exit(0)
+                
               }
             else
               {
