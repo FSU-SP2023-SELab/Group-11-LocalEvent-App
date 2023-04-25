@@ -47,6 +47,7 @@ const user = auth.currentUser;
 //for writing to the database
 import { ref, set } from "firebase/database";
 import { err } from 'react-native-svg/lib/typescript/xml';
+import Settings from './components/Settings';
 export function writeUserData(story: UserStory) {
 
   geocode(story.address).then(resp=> {
@@ -77,7 +78,7 @@ async function monitorLocation(){
 
   console.log("Getting Position")
   let locationSubscription = await LocationPerms.watchPositionAsync(
-    { accuracy: LocationPerms.Accuracy.Low, timeInterval: 1000, distanceInterval: 10 },
+    { accuracy: LocationPerms.Accuracy.Low, timeInterval: 10000, distanceInterval: 10 },
     location => {
       console.log(location);
     });
@@ -280,7 +281,7 @@ export default function App() {
           title: ""
           // background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
         }}>
-          {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} />}
+          {(props) => <HomeTabNavigator {...props} listOfAllUserStories={listOfAllUserStories} refreshPage={RefreshPage} />}
         </Stack.Screen>
         <Stack.Screen
         name='UserStory'
@@ -297,6 +298,10 @@ export default function App() {
         <Stack.Screen
         name="AddUserStoryButton"
         component={AddUserStoryButton}
+        />
+        <Stack.Screen
+          name='Settings'
+          component={Settings}
         />
         
         </>

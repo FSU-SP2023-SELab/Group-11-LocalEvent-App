@@ -34,6 +34,8 @@ export default function RegisterPage({navigation}) {
         set(ref(database,'Users/'+user.uid),{
           first: firstName,
           last: lastName,
+          email: email,
+          distancePreference: 50
         })
 
         returnToHomePage()
@@ -46,13 +48,11 @@ export default function RegisterPage({navigation}) {
       });
     }
   }
-    const handleIsSamePassword = () => { setSamePasswords(!isSamePassword) }
+  const handleIsSamePassword = () => { setSamePasswords(!isSamePassword) }
 
-    function returnToHomePage() {
-      navigation.navigate('Start')
-    }
-    
-
+  function returnToHomePage() {
+    navigation.navigate('Start')
+  }
   return (
     <View style={styles.container}>
         <View style={styles.miniContainer}>
