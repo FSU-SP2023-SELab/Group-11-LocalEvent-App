@@ -68,6 +68,7 @@ export function writeUserData(story: UserStory) {
       eventDescription: story.eventDescription,
       latlong: latlong,
       userID: story.userID,
+      address: story.address,
     });}).catch(error => {
       console.error(error);
     });
