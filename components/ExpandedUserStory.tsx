@@ -84,17 +84,15 @@ function ExpandedUserStory({route, RefreshPage}) {
 
         <View style={styles.titleContainer}>
           <Text style={{fontSize: 40}}>{titleOfEvent}</Text>
-          <Text>{timeOfEvent}</Text>
         </View>
         <View>
-          <Text style={{fontSize: 18}}> Date: </Text>
-          <Text> {dayOfEvent}</Text>
+          <Text style={{fontSize: 20}}> Date: {dayOfEvent}, {timeOfEvent}</Text>
         </View>
         <View>
-          <Text style={{fontSize: 18}}> Address:  </Text>
-          <Text> {address}</Text>
+          <Text style={{fontSize: 20}}> Address: {address} </Text>
         </View>
         <View>
+          <Text style={{fontSize: 20}}> Description</Text>
           <Text>
             {eventDescription}
           </Text>
@@ -118,7 +116,8 @@ const styles= StyleSheet.create({
     maxHeight: "60%",
     minHeight: "60%",
     maxWidth: "100%",
-    marginBottom: -200
+    marginBottom: -190
+    
   },
   titleContainer:{
     display: 'flex',
