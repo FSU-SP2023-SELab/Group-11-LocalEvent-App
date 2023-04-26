@@ -36,7 +36,8 @@ const LoginPage = ({isUser}) => {
                 {/* {the value and defaultValue may or may not be neccesary} */}
                 <TextInput style={styles.input} onChangeText={(newText) => setEmail(newText)} value={email} />
                 <Text>Password</Text>
-                <TextInput style={styles.input} onChangeText={(newText) =>setPassword(newText)} defaultValue={password} />
+                <TextInput style={styles.input} onChangeText={(newText) =>setPassword(newText)} defaultValue={password} 
+                secureTextEntry={true}/>
             </View>
 
             {
