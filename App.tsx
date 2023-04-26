@@ -87,7 +87,6 @@ async function monitorLocation(){
 
 const geocode = async(address) => {
   const geocodedLocation = await LocationPerms.geocodeAsync(address)
-  console.log(geocodedLocation)
   return geocodedLocation;
 }
 
@@ -113,44 +112,20 @@ function toRadians(degrees: number): number {
   return degrees * Math.PI / 180;
 }
 
-async function FetchPrefferedDistance(){
-  console.log("Fetching Distance")
-  let auth = getAuth();
-  let user = auth.currentUser;
-
-  const usersDistanceRef = ref(database, "Users/" + user.uid);
-  try{
-    await get(usersDistanceRef).then((snapshot) => {
-      let currentDistanceData = snapshot.val();
-      console.log("currentDistanceData: ", currentDistanceData)
-      console.log("This is what MAXDistance will be: ",currentDistanceData["distancePreference"])
-      return currentDistanceData["distancePreference"]
-    }).catch((error) => console.error(error));
-  }
-  catch(error){ 
-    console.error("Error in FetchPrefferedDistance: ", error)
-    return 50;
-   }
-}
-
 async function FetchAllUserStories(){
-    // console.log("Fetching Stories ANYTHING!!!!????")
     let MAXDISTANCE = 50
-    // const usersDistanceRef = ref(database, "Users/" + user.uid);
-    // try{
-    //   await get(usersDistanceRef).then((snapshot) => {
-    //     let currentDistanceData = snapshot.val();
-    //     MAXDISTANCE = currentDistanceData["distance"]
-    //     console.log(MAXDISTANCE)
-    //   }).catch((error) => console.error(error));
-    // }
-    // catch(error){ 
-    //   console.error("Error in FetchAllUserStories: ", error)
-    //  }
-    // MAXDISTANCE = await FetchPrefferedDistance()
-    // console.log(MAXDISTANCE)
-    console.log("Max Distance: ", MAXDISTANCE)
-
+    let auth = getAuth();
+    let user = auth.currentUser;
+    const usersDistanceRef = ref(database, "Users/" + user.uid);
+    try{
+      await get(usersDistanceRef).then((snapshot) => {
+        let currentDistanceData = snapshot.val();
+        MAXDISTANCE = currentDistanceData["distancePreference"]
+      }).catch((error) => console.error(error));
+    }
+    catch(error){ 
+      console.error("Error in FetchAllUserStories: ", error)
+     }
 
     let currLoc=await LocationPerms.getLastKnownPositionAsync().catch((error) => console.error(error));
 
