@@ -10,7 +10,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 function ExpandedUserStory({route, RefreshPage}) {
   //added id and numOfLikes to the parameter list and passed them from HomePage.tsx in the onPress()
-  const {nameOfUser, timeOfEvent, timePostWasMade, titleOfEvent, eventDescription, numOfLikes, id} = route.params
+  const {address, dayOfEvent, nameOfUser, timeOfEvent, timePostWasMade, titleOfEvent, eventDescription, numOfLikes, id} = route.params
   const db = getDatabase();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -85,6 +85,14 @@ function ExpandedUserStory({route, RefreshPage}) {
         <View style={styles.titleContainer}>
           <Text style={{fontSize: 40}}>{titleOfEvent}</Text>
           <Text>{timeOfEvent}</Text>
+        </View>
+        <View>
+          <Text style={{fontSize: 18}}> Date: </Text>
+          <Text> {dayOfEvent}</Text>
+        </View>
+        <View>
+          <Text style={{fontSize: 18}}> Address:  </Text>
+          <Text> {address}</Text>
         </View>
         <View>
           <Text>
