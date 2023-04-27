@@ -26,8 +26,6 @@ function ExpandedUserStory({route, RefreshPage}) {
       if (currentLikedData[id] === true) { //the key is the post ID 
         setLiked(true)
       }
-    }).then(() => {
-      console.log('Database read succesful');
     }).catch((error) => {
       console.error('Transaction failed: ', error);
     });
@@ -45,7 +43,6 @@ function ExpandedUserStory({route, RefreshPage}) {
       else 
         return liked ? currentValue : currentValue + 1;
     }).then(() => {
-      console.log('HandleLike ran succesfully');
       
       // Update the user's liked stories if necessary
       if (!liked) 

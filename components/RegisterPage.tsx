@@ -42,7 +42,6 @@ export default function RegisterPage({navigation}) {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorMessage, errorCode)
         setNewUser(false)
       });
     }

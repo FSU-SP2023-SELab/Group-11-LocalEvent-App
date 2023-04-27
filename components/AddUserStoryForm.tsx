@@ -66,7 +66,6 @@ function AddUserStoryForm({addUserStory}) {
         const usersRef = ref(database, "Users/" + user.uid);
         await get(usersRef).then((snapshot) => {
             let currentUserData = snapshot.val();
-            //console.log("currentUserData: " + currentUserData)
             for (let key in currentUserData) {
                 let temp = currentUserData[key]
                 if(key === "first" || key === "last") {

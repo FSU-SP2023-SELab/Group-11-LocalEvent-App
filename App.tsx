@@ -91,7 +91,7 @@ const geocode = async(address) => {
   const geocodedLocation = await LocationPerms.geocodeAsync(address)
   return geocodedLocation;
 }
-// Mark has to comment this functions purpose
+// This function calculates the distance between two points on the surface of a sphere
 function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 3958.8; // Earth's radius in Miles
   const φ1 = toRadians(lat1);
@@ -138,8 +138,6 @@ async function FetchAllUserStories(){
       longitude: currLoc.coords.longitude,
     }
 
-    console.log(latlong)
-
     let tempUserStory = []
     const usersRef = ref(database, "UserStories/");
     await get(usersRef).then((snapshot) => {
@@ -154,7 +152,6 @@ async function FetchAllUserStories(){
 
     for (const entry of tempUserStory) {
       let distance=haversine(latlong.latitude,latlong.longitude,entry["latlong"]["latitude"],entry["latlong"]["longitude"])
-      console.log(entry["titleOfEvent"], " - Distance from User: ", distance)
       if (distance<MAXDISTANCE) {
         locationCensoredUserStory.push(entry)
       }
@@ -166,22 +163,16 @@ async function FetchAllUserStories(){
 const Stack = createNativeStackNavigator();
 export default function App() {
 
-  console.log("starting App")
-  
 
     //High Precision Location Detection
     //I dont entirely understand why this is a thing
     LocationPerms.hasServicesEnabledAsync().then(resp => {
       
-      console.log(resp)
       if (resp==false)
       {
-        console.log("Asking for Permissions")
         LocationPerms.enableNetworkProviderAsync()
       }
-      else
-      {
-        console.log("Network Services On")
+      else{
       }
 
     }).catch(error => {
@@ -191,24 +182,19 @@ export default function App() {
     //Acutally
     LocationPerms.getForegroundPermissionsAsync().then(resp => {
       
-      console.log(resp)
       if (resp.granted==false) {
-        console.log("Asking for Permissions")
         LocationPerms.requestForegroundPermissionsAsync().then(resp2=> {
           if (resp2.granted==false) {
             if (Platform.OS === 'ios') {
-                console.log("//iOS boys please let me know if this closes")
                 process.exit(0)
               }
             else {
-                console.log("//Todo Shutdown App instead of backout")
                 BackHandler.exitApp();
               }
           }
         }).catch(error => {console.error(error);});
       }
       else {
-        console.log("already have permissions")
         monitorLocation();
       }
 
@@ -223,7 +209,7 @@ export default function App() {
   // This useEffect is used to add a new userStory to the listOfAllUserStories 
   useEffect(()=> {
     if(singleUserStory === null){
-      // console.log("No UserStory Added")
+      return
     }
     else{
       setlistOfAllUserStories([singleUserStory, ...listOfAllUserStories])
@@ -237,7 +223,6 @@ export default function App() {
   
   // This a general refresh function that is used to refresh the page
   async function RefreshPage(isLiked: boolean){
-    // console.log("Liked Button Clicked")
     try{
       let tempUserStory : UserStory[] = await FetchAllUserStories()
       setlistOfAllUserStories(tempUserStory)
@@ -245,9 +230,7 @@ export default function App() {
     catch{
       console.log("Error in RefreshPage")
     }
-    
-    // console.log("This is inside of the liked userStory function",tempUserStory)
-    // setSingleLike(true)
+
   }
   // This function is used to add a new userStory to the listOfAllUserStories
   function addUserStory(userStory: UserStory){
@@ -260,7 +243,6 @@ export default function App() {
     setLoggedIn(isLoggedIn);
     
     let userStories= await FetchAllUserStories()
-    console.log("This is inside of the isUser function",userStories)
     
     setlistOfAllUserStories(userStories) //currentStoryDataJSON
   }
@@ -303,13 +285,11 @@ export default function App() {
         </Stack.Screen>
         <Stack.Screen
         name='UserStory'
-        // component={ExpandedUserStory}
         >
           {(props) => <ExpandedUserStory {...props} RefreshPage={RefreshPage} />}
         </Stack.Screen>
         <Stack.Screen
         name="AddUserStoryForm"
-        // component={AddUserStoryForm}
         >
           {(props) => <AddUserStoryForm addUserStory={addUserStory} />}
         </Stack.Screen>

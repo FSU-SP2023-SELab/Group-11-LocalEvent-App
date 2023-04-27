@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 
 // This component is used to navigate between the Home page and the Top Posts page
 function HomeTabNavigator({listOfAllUserStories, refreshPage}) {
-
+  
   let navigation = useNavigation()
   function myRefreshPage(){
     refreshPage()
@@ -20,7 +20,6 @@ function HomeTabNavigator({listOfAllUserStories, refreshPage}) {
         <Tab.Navigator>
             <Tab.Screen
             name="RealHome"
-            // component={HomePage}
             options={{
               title: 'All Posts',
               // Here we can add a button to navigate to the settings page
