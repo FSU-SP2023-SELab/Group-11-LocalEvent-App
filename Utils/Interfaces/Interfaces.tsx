@@ -1,5 +1,6 @@
 import { Float } from "react-native/Libraries/Types/CodegenTypes";
 
+//This is what we're using to interact with FireBase to store user story information
 export interface UserStory{
     id: number,
     numOfLikes: number,
@@ -14,6 +15,7 @@ export interface UserStory{
     address: string,
 }
 
+//Stores coordinate information to firebase
 export interface LatLong {
     latitude: Float,
     longitude: Float,

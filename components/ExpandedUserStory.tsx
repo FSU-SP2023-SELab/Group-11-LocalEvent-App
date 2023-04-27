@@ -25,8 +25,6 @@ function ExpandedUserStory({route, RefreshPage}) {
       let currentLikedData = snapshot.val();
       if (currentLikedData[id] === true) { //the key is the post ID 
         setLiked(true)
-        // console.log(currentLikedData[id])
-        // console.log(id)
       }
     }).then(() => {
       console.log('Database read succesful');
@@ -37,6 +35,8 @@ function ExpandedUserStory({route, RefreshPage}) {
 
   fetchLikeValue();
   
+  // When a post is liked it adds the posts id to the "User"'s 
+  // liked stories in the database as a boolean, liked = true
   const handleLike = async () => {
     // adding 1 or subtracting 1 based on like value
     await runTransaction(storyRef, (currentValue) => {
@@ -100,6 +100,8 @@ function ExpandedUserStory({route, RefreshPage}) {
     </View>
   )
 }
+
+
 const styles= StyleSheet.create({
   expandedUserStoryPageContainer:{
     height:"100%",
@@ -135,4 +137,5 @@ const styles= StyleSheet.create({
 
 
 })
+
 export default ExpandedUserStory

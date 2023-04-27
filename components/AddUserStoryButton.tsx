@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import {View , Image , StyleSheet, TouchableOpacity} from 'react-native'
 
-
+// This component is used to add a new user story by displaying a button that navigates to the AddUserStoryForm screen
 function AddUserStoryButton() {
   const myNavigation = useNavigation()
   return (

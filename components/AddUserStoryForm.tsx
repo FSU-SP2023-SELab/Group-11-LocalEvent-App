@@ -12,6 +12,7 @@ import { equalTo, getDatabase, onValue, orderByChild, push, query, ref, get } fr
 const dateTemplate = "(MM/DD/YYYY)"
 
 function AddUserStoryForm({addUserStory}) {
+    // Here we are initializing the state variables that will be used to store the user's input
     const [selectedAMPM, setSelectedAMPM] = useState("");
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
@@ -25,7 +26,8 @@ function AddUserStoryForm({addUserStory}) {
 
 
     const navigation = useNavigation()
- 
+    // validateEntry is called when the user presses the submit button
+    // Once they do we check if the input is valid and if it is we add the user story to the database
     function validateEntry(){       
         if(!EventTimeIsCorrect(eventTime) && !DayIsCorrect(eventDay)){
             setIsEventDayIncorrect(true)
@@ -53,30 +55,33 @@ function AddUserStoryForm({addUserStory}) {
         setIsEventTimeIncorrect(false)
         changingPagePlusAddingUserStory()
     }
-
+    // changingPagePlusAddingUserStory will add the user story to the database and then navigate back to the home screen
     async function changingPagePlusAddingUserStory() {
         const auth = getAuth();
         const user = auth.currentUser;
         const database = getDatabase()
-        
+
+        // This is used to get the user's full name
         let fullName = ''
-        const usersRef = ref(database, "Users/" + user.uid); //USE this idea for fetching all user stories
+        const usersRef = ref(database, "Users/" + user.uid);
         await get(usersRef).then((snapshot) => {
-        let currentUserData = snapshot.val();
-        //console.log("currentUserData: " + currentUserData)
-        for (let key in currentUserData) {
-            let temp = currentUserData[key]
-            if(key === "first" || key === "last") {
-                fullName += temp + " "
+            let currentUserData = snapshot.val();
+            //console.log("currentUserData: " + currentUserData)
+            for (let key in currentUserData) {
+                let temp = currentUserData[key]
+                if(key === "first" || key === "last") {
+                    fullName += temp + " "
+                }
             }
-        }
         }).catch((error) => console.error(error));
+        
+        // Here we set the time of the event to be the time the user selected plus the AM or PM
         let newEventTime = eventTime + selectedAMPM
         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
         let tempNowTime = new Date()
         let nowTime = tempNowTime.toDateString()
-        console.log(nowTime)
-        //console.log(typeof(tempNowTime))
+
+        // Here we create a temporary user story object that will be used to add the user story to the database
         const temp : UserStory = {
             id: id,
             numOfLikes: 0,
@@ -90,16 +95,18 @@ function AddUserStoryForm({addUserStory}) {
             address: address,
             userID: user.uid,
         }
+        
         addUserStory(temp)
         writeUserData(temp)
         navigation.navigate('Home')
     }
 
-
+  // This is the Data for the dropdown menu
   const data = [
       {key:'1', value:'AM'},
       {key:'2', value:'PM'}
   ]
+
   return (
     <View style={styles.container}>
         <View style={styles.titleContainer}>
