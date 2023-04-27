@@ -6,7 +6,7 @@ import styles from "../Utils/Styles/RegisterPageStyle"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set,push, child, get} from "firebase/database";
 
-
+//Inputs user information and stores in database
 export default function RegisterPage({navigation}) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -17,7 +17,6 @@ export default function RegisterPage({navigation}) {
   const [isSamePassword, setSamePasswords] = useState(true)
 
   const handleNewUser = () => {
-    //need to figure out what to do with first name and lastname
     if (password !== password_reenter) {
       setSamePasswords(false) //display the error message
     }

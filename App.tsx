@@ -48,6 +48,7 @@ import { ref, set } from "firebase/database";
 import { err } from 'react-native-svg/lib/typescript/xml';
 import Settings from './components/Settings';
 import { once } from 'process';
+// This function writes the user data to the database
 export function writeUserData(story: UserStory) {
 
   geocode(story.address).then(resp=> {
@@ -55,7 +56,7 @@ export function writeUserData(story: UserStory) {
       latitude: resp[0].latitude,
       longitude: resp[0].longitude,
     }
-
+    // Here we create a new entry in the database with the user's data
     set(ref(database, 'UserStories/' + story.id), {
       id: story.id,
       numOfLikes: story.numOfLikes,
@@ -72,12 +73,12 @@ export function writeUserData(story: UserStory) {
     });}).catch(error => {
       console.error(error);
     });
-  }
+}
 let tempArr : UserStory[] = []
+
 
 async function monitorLocation(){
 
-  console.log("Getting Position")
   let locationSubscription = await LocationPerms.watchPositionAsync(
     { accuracy: LocationPerms.Accuracy.Low, timeInterval: 10000, distanceInterval: 10 },
     location => {
@@ -90,7 +91,7 @@ const geocode = async(address) => {
   const geocodedLocation = await LocationPerms.geocodeAsync(address)
   return geocodedLocation;
 }
-
+// Mark has to comment this functions purpose
 function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 3958.8; // Earth's radius in Miles
   const φ1 = toRadians(lat1);
@@ -113,6 +114,8 @@ function toRadians(degrees: number): number {
   return degrees * Math.PI / 180;
 }
 
+// Querys the data base for all UserStories 
+// and displays them if within an end users "distancePreference"
 async function FetchAllUserStories(){
     let MAXDISTANCE = 50
     let auth = getAuth();
@@ -138,23 +141,21 @@ async function FetchAllUserStories(){
     console.log(latlong)
 
     let tempUserStory = []
-    const usersRef = ref(database, "UserStories/"); //USE this idea for fetching all user stories
+    const usersRef = ref(database, "UserStories/");
     await get(usersRef).then((snapshot) => {
     let currentStoryData = snapshot.val(); 
     for (let key in currentStoryData) {
         let temp = currentStoryData[key]
         tempUserStory.unshift(temp)
-        }
+      }
     }).catch((error) => console.error(error));
 
     let locationCensoredUserStory = []
 
-    for (const entry of tempUserStory)
-    {
+    for (const entry of tempUserStory) {
       let distance=haversine(latlong.latitude,latlong.longitude,entry["latlong"]["latitude"],entry["latlong"]["longitude"])
       console.log(entry["titleOfEvent"], " - Distance from User: ", distance)
-      if (distance<MAXDISTANCE)
-      {
+      if (distance<MAXDISTANCE) {
         locationCensoredUserStory.push(entry)
       }
     }
@@ -191,28 +192,22 @@ export default function App() {
     LocationPerms.getForegroundPermissionsAsync().then(resp => {
       
       console.log(resp)
-      if (resp.granted==false)
-      {
+      if (resp.granted==false) {
         console.log("Asking for Permissions")
         LocationPerms.requestForegroundPermissionsAsync().then(resp2=> {
-          if (resp2.granted==false)
-          {
-            if (Platform.OS === 'ios') 
-              {
+          if (resp2.granted==false) {
+            if (Platform.OS === 'ios') {
                 console.log("//iOS boys please let me know if this closes")
                 process.exit(0)
-                
               }
-            else
-              {
+            else {
                 console.log("//Todo Shutdown App instead of backout")
                 BackHandler.exitApp();
               }
           }
         }).catch(error => {console.error(error);});
       }
-      else
-      {
+      else {
         console.log("already have permissions")
         monitorLocation();
       }
@@ -220,10 +215,12 @@ export default function App() {
     }).catch(error => {
       console.error(error);
     });
-
+  // Here we set the useStates that will be propregated down to the children
   const [isLoggedIn, setLoggedIn] = useState(false)  
   const [listOfAllUserStories, setlistOfAllUserStories] = useState<UserStory[]>([])
   const [singleUserStory, setSingleUserStory] = useState<UserStory>(null)
+  
+  // This useEffect is used to add a new userStory to the listOfAllUserStories 
   useEffect(()=> {
     if(singleUserStory === null){
       // console.log("No UserStory Added")
@@ -238,6 +235,7 @@ export default function App() {
   
   
   
+  // This a general refresh function that is used to refresh the page
   async function RefreshPage(isLiked: boolean){
     // console.log("Liked Button Clicked")
     try{
@@ -251,11 +249,13 @@ export default function App() {
     // console.log("This is inside of the liked userStory function",tempUserStory)
     // setSingleLike(true)
   }
+  // This function is used to add a new userStory to the listOfAllUserStories
   function addUserStory(userStory: UserStory){
     setSingleUserStory(userStory)
   }
 
-
+  // This function is used to set the isLoggedIn state
+  // If it is true then the user is logged in and the home page is displayed
   async function isUser(isLoggedIn: boolean){
     setLoggedIn(isLoggedIn);
     

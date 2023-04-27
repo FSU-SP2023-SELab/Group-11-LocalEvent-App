@@ -9,19 +9,13 @@ import { useNavigation } from '@react-navigation/native'
 
 const Tab = createBottomTabNavigator();
 
-
-
-//const Drawer = createDrawerNavigator();
+// This component is used to navigate between the Home page and the Top Posts page
 function HomeTabNavigator({listOfAllUserStories, refreshPage}) {
-  let listOfRandomLikes : number[] = []
-  for(let i = 0; i < listOfAllUserStories.length; i++){
-    listOfRandomLikes.push(Math.floor((Math.random()*10))+ 1) 
-  }
+
   let navigation = useNavigation()
   function myRefreshPage(){
     refreshPage()
   }
-
   return (
         <Tab.Navigator>
             <Tab.Screen
@@ -29,33 +23,28 @@ function HomeTabNavigator({listOfAllUserStories, refreshPage}) {
             // component={HomePage}
             options={{
               title: 'All Posts',
+              // Here we can add a button to navigate to the settings page
               headerLeft: () => (
                 <Button onPress={() => navigation.navigate('Settings')}
                   title="Settings"
                   color="#0000FF"/>
               ),
               headerRight: () => (
+                // Here we can add a button to refresh the page
                 <Button onPress={() => myRefreshPage()}
                   title="Refresh"
                   color="#0000FF"/>
               ),
             }}
             >
-              {(props) => <HomePage {...props} listOfAllUserStories={listOfAllUserStories} listOfRandomLikes = {listOfRandomLikes}/>}
+              {(props) => <HomePage {...props} listOfAllUserStories={listOfAllUserStories}/>}
             </Tab.Screen>
             <Tab.Screen
             name="Best This Week"
-            // component={HomePageTopPosts}
             >
-              {(props) => <HomePageTopPosts {...props} listOfAllUserStories={listOfAllUserStories} listOfRandomLikes= {listOfRandomLikes}/>}
+              {(props) => <HomePageTopPosts {...props} listOfAllUserStories={listOfAllUserStories}/>}
             </Tab.Screen>
         </Tab.Navigator>
-        // <Drawer.Navigator>
-        //     <Drawer.Screen
-        //     name="Settings"
-        //     component={Settings}
-        //     />
-        // </Drawer.Navigator>
         
   )
 }

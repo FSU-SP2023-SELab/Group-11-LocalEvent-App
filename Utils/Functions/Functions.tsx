@@ -4,7 +4,7 @@ export  function seePassword(password) {
     alert(password)
 }
 
-// App Functions
+// Checks if input string is a number
 export function isNumber(char: string) {
     return /^\d+$/.test(char);
 }
@@ -14,39 +14,27 @@ export function isNumber(char: string) {
 Below are the date validation funcitons for AddUserStoryForms
 */
 
+//Checks if the year as an integer is a leap year, used in isValidDay
 const isLeapYear = (year: number): boolean => {
     return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   };
 
+  //Used to check for valid day in dayIsCorrect
   const isValidDay = (day: number, month: number, year: number): boolean => 
   {
     const daysInMonth = [ 31,isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, ];
     return day >= 1 && day <= daysInMonth[month - 1];
 };
 
+//Checks if a number is between 1 and 12, used to check months in DayIsCorrect
 function IsBetween1And12(num: number) {
     if(num < 1 || num > 12)
         return false
     return true
 }
 
-//function IsBeforeCurrentDay() {
-//    let currDay = Date()
-//}
 
-/*export const futureTime=(key:number, eventTime:string)
-{
-    const hour:number=parseInt(eventTime.substring(0))
-
-}*/
-//checks formatting, valid date inputs, 
-
-//Bad date condition
-//Bad time
-//Past Date
-//All good
-
-
+//Checks an input string for correct formatting and valid date
 export const DayIsCorrect = (eventTime: string) => {
     if(eventTime.length !== 10)
         return false
@@ -72,6 +60,7 @@ export const DayIsCorrect = (eventTime: string) => {
     }
 }
 
+//Checks for a valid time input format
 export const EventTimeIsCorrect = (eventTime: string) => {
     if(eventTime.length === 5) {
         if(!isNumber(eventTime.substring(0,2)))
@@ -130,6 +119,7 @@ export const EventTimeIsCorrect = (eventTime: string) => {
     else return false
 }
 
+//Verifies that the date input is in the future
 export const isFutureTime = (eventDay:string)=> {
     const month:number=parseInt(eventDay.substring(0,2))
     const day : number=parseInt(eventDay.substring(3,5))

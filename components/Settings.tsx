@@ -4,10 +4,13 @@ import { getDatabase, ref, set, update } from 'firebase/database'
 import React, { useState } from 'react'
 import {View, Text, TextInput, Button} from 'react-native'
 
+//Allows user to distance of events displayed in feed
 function Settings() {
   const [distancePreference, setDistancePreference] = useState(0)
   const [distancePreferenceError, setDistancePreferenceError] = useState(false)
   let navigation = useNavigation()
+  // validateEntry is called when the user presses the submit button
+  // Once they do we check if the input is valid and if it is we update the user's distance preference
   async function validateEntry(){
     if(isNaN(distancePreference)){
       setDistancePreferenceError(true)

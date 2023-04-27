@@ -5,6 +5,7 @@ import styles from "../Utils/Styles/LoginPageStyle"
 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
+//This function checks login input with database
 const LoginPage = ({isUser}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -12,6 +13,8 @@ const LoginPage = ({isUser}) => {
 
     const auth = getAuth();
 
+    // This function uses the sign in function from firebase auth library to 
+    // veryify that an end user has a firebase account, if not give the use and error message
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

@@ -9,11 +9,10 @@ import AddUserStoryForm from './AddUserStoryForm';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 
-function HomePage({listOfAllUserStories, listOfRandomLikes}) {
+function HomePage({listOfAllUserStories}) {
     const navigation = useNavigation()
 
-    const [likeStatus, setLikeStatus] = useState<boolean[]>(new Array(11).fill(false));
-
+    // convert listOfAllUserStories to an array of JSX elements
     let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, index) => {
     return(
       <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {address: d.address, dayOfEvent: d.dayOfEvent, nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription, numOfLikes: d.numOfLikes, id: d.id})} key={"UserStory " + index.toString()}>
@@ -33,7 +32,6 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
             <View style={{height: 20, display: 'flex', flexDirection: 'row', justifyContent:'space-between'}}>
                 <Text style={{textAlign: 'right'}}>Posted By: {d.nameOfUser}</Text>
                 <Text style={{}}>Likes: {Number(d.numOfLikes)}</Text>
-                {/* <Text style={{}}>Likes: {listOfRandomLikes[index]}</Text> */}
             </View>
         </View>
       </TouchableOpacity> 
@@ -53,6 +51,8 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
 }
 export default HomePage
 
+
+// styles for the home page 
 const buttonStyles = StyleSheet.create({
     buttonContainer:{
         display: "flex",

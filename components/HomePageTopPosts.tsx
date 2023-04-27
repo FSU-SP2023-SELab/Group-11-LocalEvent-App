@@ -4,13 +4,17 @@ import {View, Text, TouchableOpacity, Image} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import styles from '../Utils/Styles/HomePageStyle'
 import { UserStory } from '../Utils/Interfaces/Interfaces'
-function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
+// This component is used to display the user stories with the most likes at the top of the home page
+function HomePageTopPosts({listOfAllUserStories}) {
 
     const navigation =  useNavigation()
     let myList : UserStory[] = []
     for(let i = 0; i < listOfAllUserStories.length; i++)
       myList.push(listOfAllUserStories[i])
+    // sort the list of user stories by the number of likes
     myList.sort((p1,p2) => p1.numOfLikes < p2.numOfLikes ? 1 : p1.numOfLikes > p2.numOfLikes ? -1 : 0 )
+
+    // convert to JSX.Element array using map
     let listOfUserStories: JSX.Element[] = myList.map((d, index) => {
 
     return(
@@ -35,6 +39,7 @@ function HomePageTopPosts({listOfAllUserStories, listOfRandomLikes}) {
     </View>
   </TouchableOpacity> 
 )})
+// return the list of user stories in a scroll view
   return (
     <ScrollView>
       {listOfUserStories}
