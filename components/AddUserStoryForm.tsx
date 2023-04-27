@@ -66,13 +66,16 @@ function AddUserStoryForm({addUserStory}) {
         //console.log("currentUserData: " + currentUserData)
         for (let key in currentUserData) {
             let temp = currentUserData[key]
-            fullName += temp + " "
+            if(key === "first" || key === "last") {
+                fullName += temp + " "
             }
+        }
         }).catch((error) => console.error(error));
         let newEventTime = eventTime + selectedAMPM
         const id = Date.now() + Math.floor(Math.random() * 1000); // generates a unique numerical ID
         let tempNowTime = new Date()
         let nowTime = tempNowTime.toDateString()
+        console.log(nowTime)
         //console.log(typeof(tempNowTime))
         const temp : UserStory = {
             id: id,
