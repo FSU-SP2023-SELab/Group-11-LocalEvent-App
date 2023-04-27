@@ -16,7 +16,7 @@ function HomePage({listOfAllUserStories, listOfRandomLikes}) {
 
     let listOfUserStories: JSX.Element[] = listOfAllUserStories.map((d, index) => {
     return(
-      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription, numOfLikes: d.numOfLikes, id: d.id})} key={"UserStory " + index.toString()}>
+      <TouchableOpacity onPress={()=> navigation.navigate('UserStory', {address: d.address, dayOfEvent: d.dayOfEvent, nameOfUser: d.nameOfUser, timeOfEvent: d.timeOfEvent, timePostWasMade: d.timePostWasMade, titleOfEvent: d.titleOfEvent, eventDescription: d.eventDescription, numOfLikes: d.numOfLikes, id: d.id})} key={"UserStory " + index.toString()}>
         <View style={styles.userStoryContainer}>
             <View style={styles.picTitleLikeContainer}>
                     <Image source={require('../Utils/Imgs/Party2.jpeg')} style={styles.picStyle} key={index}></Image> 
