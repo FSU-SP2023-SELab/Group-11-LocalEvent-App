@@ -7,3 +7,15 @@
 > `Download Repo`
 
 > `run npm install` 
+
+> `run npx expo start`
+
+> `Download the Expo App on your phone and use your camera on the QR Code generated`
+
+> `Enjoy our app :D`
+
+- For best experience follow these steps:
+  * Make an account
+  * Login and post an event
+  * Make sure to go to settings and set your visibility radius
+  * Add and like events that you are interested in and go wild
